@@ -1,0 +1,23 @@
+{
+    "name": "cakephp/codeception",
+    "description": "Run CakePHP tests using Codeception",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "CakePHP Community",
+            "homepage": "http://cakephp.org"
+        }
+    ],
+    "require": {
+        "codeception/codeception": "2.0.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Cake\\Codeception\\": "src"
+        }
+    },
+    "bin": [
+        "codecept"
+    ]
+}
