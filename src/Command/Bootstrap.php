@@ -1,7 +1,7 @@
 <?php
 namespace Cake\Codeception\Command;
 
-use Codeception\Lib\Generator\Helper;
+use Cake\Codeception\Lib\Generator\Helper;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -9,15 +9,18 @@ use Symfony\Component\Yaml\Yaml;
 
 class Bootstrap extends \Codeception\Command\Bootstrap
 {
-    protected $namespace = 'App\Test';
     protected $actorSuffix = 'Tester';
-    protected $helperDir = 'src/TestSuite/Codeception';
+    protected $helperDir = 'src/TestSuite/Codeception/Module';
     protected $logDir = 'tmp/tests';
     protected $dataDir = 'tests/Fixture';
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $this->namespace = rtrim($input->getOption('namespace'), '\\');
+
+        if (empty($this->namespace)) {
+            $this->namespace = 'App\TestSuite';
+        }
 
         if ($input->getOption('actor')) {
             $this->actorSuffix = $input->getOption('actor');
@@ -32,6 +35,7 @@ class Bootstrap extends \Codeception\Command\Bootstrap
 
         $realpath = realpath($path);
         chdir($path);
+        @mkdir('src/TestSuite/Codeception');
 
         if (file_exists('codeception.yml')) {
             $output->writeln("<error>\nProject is already initialized in '$path'\n</error>");
@@ -73,19 +77,85 @@ class Bootstrap extends \Codeception\Command\Bootstrap
                 'bootstrap'    => 'bootstrap.php',
                 'colors'       => (strtoupper(substr(PHP_OS, 0, 3)) != 'WIN'),
                 'memory_limit' => '1024M'
-            ],
-            'modules'  => [
-                'enabled' => [
-                    'Cake\Codeception\Helper',
-                ],
             ]
         ];
 
-        $str = Yaml::dump($basicConfig, 4);
+        $str = Yaml::dump($basicConfig, 3);
         if ($this->namespace) {
             $str = "namespace: {$this->namespace} \n" . $str;
         }
         file_put_contents('codeception.yml', $str);
+    }
+
+    protected function createFunctionalSuite($actor = 'Functional')
+    {
+        $suiteConfig = [
+            'class_name' => $actor . $this->actorSuffix,
+            'modules' => [
+                'enabled' => [
+                    'Cake\Codeception\Helper',
+                    $actor . 'Helper'
+                ]
+            ],
+        ];
+
+        $docblock = [
+            '#',
+            '# CakePHP Codeception Functional Test Suite Configuration' . "\n#",
+            '# Allows you to emulate web requests and make the application ',
+            '# process them.' . "\n#\n",
+            Yaml::dump($suiteConfig, 2)
+        ];
+        $this->createSuite('functional', $actor, implode("\n", $docblock));
+    }
+
+    protected function createAcceptanceSuite($actor = 'Acceptance')
+    {
+        $suiteConfig = [
+            'class_name' => $actor . $this->actorSuffix,
+            'modules' => [
+                'enabled' => [
+                    'Cake\Codeception\Helper',
+                    'PhpBrowser',
+                    $actor . 'Helper'
+                ],
+                'config'  => [
+                    'PhpBrowser' => [
+                        'url' => 'http://localhost/myapp/'
+                    ],
+                ]
+            ],
+        ];
+
+        $docblock = [
+            '#',
+            '# CakePHP Codeception Acceptance Test Suite Configuration' . "\n#",
+            '# Allows you to perform web requests in the browser using the PhpBrowser',
+            '# or WebDriver. If you need both the PhpBrowser and the',
+            '# WebDriver, create a separate suite.' . "\n#\n",
+            Yaml::dump($suiteConfig, 5)
+        ];
+        $this->createSuite('acceptance', $actor, implode("\n", $docblock));
+    }
+
+    protected function createUnitSuite($actor = 'Unit')
+    {
+        $suiteConfig = [
+            'class_name' => $actor . $this->actorSuffix,
+            'modules' => [
+                'enabled' => [
+                    'Asserts',
+                    $actor . 'Helper'
+                ]
+            ],
+        ];
+
+        $docblock = [
+            '#',
+            '# CakePHP Codeception Unit Test Suite Configuration' . "\n#",
+            Yaml::dump($suiteConfig, 2)
+        ];
+        $this->createSuite('unit', $actor, implode("\n", $docblock));
     }
 
     protected function createSuite($suite, $actor, $config)
@@ -118,4 +188,5 @@ class Bootstrap extends \Codeception\Command\Bootstrap
         $output->writeln("tests/acceptance created           <- acceptance tests");
         $output->writeln("tests/acceptance.suite.yml written <- acceptance tests suite configuration");
     }
+
 }

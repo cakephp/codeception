@@ -4,12 +4,12 @@
  * Codeception CLI
  */
 
-require_once dirname(__FILE__).'/autoload.php';
+require_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'autoload.php';
 
 use Symfony\Component\Console\Application;
 
 $app = new Application('Codeception', Codeception\Codecept::VERSION);
-$app->add(new Codeception\Command\Build('build'));
+$app->add(new Cake\Codeception\Command\Build('build'));
 $app->add(new Codeception\Command\Run('run'));
 $app->add(new Codeception\Command\Console('console'));
 $app->add(new Cake\Codeception\Command\Bootstrap('bootstrap'));
