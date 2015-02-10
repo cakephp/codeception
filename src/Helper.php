@@ -2,6 +2,7 @@
 namespace Cake\Codeception;
 
 use Cake\Codeception\Helper\AuthTrait;
+use Cake\Codeception\Helper\ConfigTrait;
 use Cake\Codeception\Helper\DbTrait;
 use Cake\Codeception\Helper\DispatcherTrait;
 use Cake\Codeception\Helper\RouterTrait;
@@ -18,6 +19,7 @@ class Helper extends Framework
 {
 
     use AuthTrait;
+    use ConfigTrait;
     use DbTrait;
     use DispatcherTrait;
     use RouterTrait;

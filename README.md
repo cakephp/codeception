@@ -40,6 +40,24 @@ $I->seeSessionHasValues([
 
 ...
 
+### Config
+
+#### Assert config key(/value) with `seeInConfig($key, $value = null)`
+
+```php
+$I->seeInConfig('App.name'); // checks only that the key exists
+$I->seeInConfig('App.name', 'CakePHP');
+$I->seeInConfig(['App.name' => 'CakePHP']);
+```
+
+#### Assert no config key(/value) with `dontSeeInConfig($key, $value = null)`
+
+```php
+$I->dontSeeInConfig('App.name'); // checks only that the key does not exist
+$I->dontSeeInConfig('App.name', 'CakePHP');
+$I->dontSeeInConfig(['App.name' => 'CakePHP']);
+```
+
 ### Db
 
 
