@@ -54,10 +54,16 @@ class Helper extends Framework
 
     public function _before(TestCase $test)
     {
-        $this->testCase = $test->getTestClass();
+        if (method_exists($test, 'getTestClass')) {
+            $this->testCase = $test->getTestClass();
+        } else {
+            $this->testCase = $test;
+        }
+
         if (!isset($this->testCase->autoFixtures)) {
             $this->testCase->autoFixtures = $this->config['autoFixtures'];
         }
+
         if (!isset($this->testCase->dropTables)) {
             $this->testCase->dropTables = $this->config['dropTables'];
         }
@@ -82,7 +88,7 @@ class Helper extends Framework
     {
         $this->_resetApplication();
         $this->fixtureManager->unload($this->testCase);
-        if ($test->getTestClass()->dropTables) {
+        if ($this->testCase->dropTables) {
             $this->fixtureManager->shutDown();
         }
     }
