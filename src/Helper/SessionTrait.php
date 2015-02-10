@@ -5,6 +5,17 @@ trait SessionTrait
 {
 
     /**
+     * Inserts key/value(s) in the session.
+     *
+     * @param string|array $key Session key or array of key/values.
+     * @param mixed $value Value.
+     */
+    public function haveInSession($key, $value = null)
+    {
+        $this->grabService('session')->write($key, $value);
+    }
+
+    /**
      * Asserts that given key (and value) exist in the session.
      *
      * @param string|array $key Session key or array of key/values.
