@@ -96,9 +96,16 @@ class Helper extends Framework
         $this->fixtureManager->load($this->testCase);
     }
 
-    public function expectedCakePHPVersion($ver)
+    /**
+     * Asserts the expected CakePHP version.
+     *
+     * @param string $ver Expected version.
+     * @param string $operator Comparison to run, defaults to greater or equal.
+     * @
+     */
+    public function expectedCakePHPVersion($ver, $operator = 'ge')
     {
-        // Not yet implemented.
+        $this->assertTrue(version_compare($ver, Configure::read('Cake.version'), $operator));
     }
 
     public function grabService($class)
