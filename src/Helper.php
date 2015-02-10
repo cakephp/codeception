@@ -25,15 +25,31 @@ class Helper extends Framework
     use SessionTrait;
     use ViewTrait;
 
-    protected $_currentConfiguration;
-
-    protected $fixtureManager = null;
-    protected $testCase = null;
-
+    /**
+     * Module's default configuration.
+     *
+     * @var array
+     */
     public $config = [
         'autoFixtures' => true,
         'dropTables' => false,
     ];
+
+    /**
+     * The class responsible for managing the creation, loading and removing of fixtures
+     *
+     * @var \Cake\TestSuite\Fixture\FixtureManager
+     */
+    protected $fixtureManager = null;
+
+    /**
+     * Configure values to restore at end of test.
+     *
+     * @var array
+     */
+    protected $configure = [];
+
+    protected $testCase = null;
 
     public function _before(TestCase $test)
     {
@@ -97,16 +113,16 @@ class Helper extends Framework
 
     protected function _resetApplication()
     {
-        if (!empty($this->_currentConfiguration)) {
+        if (!empty($this->configure)) {
             Configure::clear();
-            Configure::write($this->_currentConfiguration);
+            Configure::write($this->configure);
         }
     }
 
     protected function _snapshotApplication()
     {
-        if (empty($this->_currentConfiguration)) {
-            $this->_currentConfiguration = Configure::read();
+        if (empty($this->configure)) {
+            $this->configure = Configure::read();
         }
     }
 
