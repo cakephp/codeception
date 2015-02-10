@@ -1,44 +1,86 @@
 <?php
 namespace Cake\Codeception\Helper;
 
+use Cake\ORM\TableRegistry;
+
 trait DbTrait
 {
 
-    public function haveRecord($model, $attributes = [])
+    /**
+     * Inserts record into the database.
+     *
+     * @param string $model Model alias.
+     * @param Cake\ORM\Entity|array $data Entity data.
+     * @return string Record's primary key.
+     */
+    public function haveRecord($model, $data = [])
     {
-        return TableRegistry::get($model)
-            ->newEntity($attributes)
-            ->isNew();
+        $table = TableRegistry::get($model);
+
+        if (!($data instanceof Entity)) {
+            $data = $table->newEntity($properties, ['validate' => false]);
+        }
+
+        if (!$table->save($data, ['checkRules' => false])) {
+            $this->fail('Could not insert record into table ' . $model);
+        }
+
+        return $data->{$table->primaryKey()};
     }
 
-    public function seeRecord($model, $attributes = [])
+    /**
+     * Checks that record exists in database.
+     *
+     * @param string $model Model alias.
+     * @param array $conditions Conditions to find the record.
+     */
+    public function seeRecord($model, $conditions = [])
     {
-        $record = $this->findRecord($model, $attributes);
-        if (!$record) {
-            $this->fail("Couldn't find $model with " . json_encode($attributes));
-        }
+        $record = $this->findRecord($model, $conditions);
         $this->debugSection($model, json_encode($record));
-    }
-
-    public function dontSeeRecord($model, $attributes = [])
-    {
-        $record = $this->findRecord($model, $attributes);
-        $this->debugSection($model, json_encode($attributes));
-        if ($record) {
-            $this->fail("Unexpectedly managed to find $model with " . json_encode($attributes));
+        if (!$record) {
+            $this->fail("Couldn't find $model with " . json_encode($conditions));
         }
     }
 
-    public function grabRecord($model, $attributes = [])
+    /**
+     * Checks that record does not exist in database.
+     *
+     * @param string $model Model alias.
+     * @param array $conditions Conditions to find the record.
+     */
+    public function dontSeeRecord($model, $conditions = [])
     {
-        $this->findRecord($model, $attributes);
+        $record = $this->findRecord($model, $conditions);
+        $this->debugSection($model, json_encode($conditions));
+        if ($record) {
+            $this->fail("Unexpectedly managed to find $model with " . json_encode($conditions));
+        }
     }
 
-    public function findRecord($model, $attributes = [])
+    /**
+     * Retrieves record from database.
+     *
+     * @param string $model Model alias.
+     * @param array $conditions Conditions to find the record.
+     * @return \Cake\ORM\Entity Record.
+     */
+    public function grabRecord($model, $conditions = [])
+    {
+        return $this->findRecord($model, $conditions);
+    }
+
+    /**
+     * Wraps the ORM finder query used by the other methods.
+     *
+     * @param string $model Model alias.
+     * @param array $conditions Conditions to find the record.
+     */
+    protected function findRecord($model, $conditions = [])
     {
         return TableRegistry::get($model)
             ->find()
-            ->where($attributes)
+            ->where($conditions)
             ->first();
     }
 }
