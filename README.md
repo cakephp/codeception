@@ -6,6 +6,25 @@ A [codeception](http://codeception.com) module to test your CakePHP 3 powered ap
 Usage
 -----
 
+Edit your [`composer.json`][appcomposer] file to include the installer script:
+
+[appcomposer]:https://github.com/cakephp/app/blob/master/composer.json#L36
+
+```
+    "scripts": {
+        "post-install-cmd": "App\\Console\\Installer::postInstall",
+        "post-autoload-dump": [
+            "Cake\\Composer\\Installer\\PluginInstaller::postAutoloadDump",
+            "Cake\\Codeception\\Console\\Installer::postAutoloadDump"
+        ]
+    },
+```
+
+The line with `Cake\\Codeception\\Console\\Installer::postInstall` is the one that
+you will be adding.
+
+Now, from the command-line:
+
 ```
 composer require --dev cakephp/codeception:dev-master
 ```

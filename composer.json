@@ -16,8 +16,5 @@
         "psr-4": {
             "Cake\\Codeception\\": "src"
         }
-    },
-    "scripts": {
-        "post-install-cmd": "Cake\\Codeception\\Console\\Installer::postInstall"
     }
 }

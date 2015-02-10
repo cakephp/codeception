@@ -5,7 +5,7 @@ use Composer\Script\Event;
 
 class Installer
 {
-    public static function postInstall(Event $event)
+    public static function postAutoloadDump(Event $event)
     {
         $binDir = dirname(dirname(dirname(dirname(__DIR__)))) . DIRECTORY_SEPARATOR . 'bin';
         $binFile = $binDir . DIRECTORY_SEPARATOR . 'codecept';

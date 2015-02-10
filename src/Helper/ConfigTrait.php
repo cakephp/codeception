@@ -52,7 +52,7 @@ trait ConfigTrait
             return;
         }
 
-        $message. = ' with ' . json_encode($value);
+        $message .= ' with ' . json_encode($value);
         $this->assertNotEquals($value, Configure::read($key), $message);
     }
 }
