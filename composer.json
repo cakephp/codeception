@@ -17,7 +17,7 @@
             "Cake\\Codeception\\": "src"
         }
     },
-    "bin": [
-        "codecept"
-    ]
+    "scripts": {
+        "post-install-cmd": "Cake\\Codeception\\Console\\Installer::postInstall"
+    }
 }
