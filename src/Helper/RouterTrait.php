@@ -1,6 +1,9 @@
 <?php
 namespace Cake\Codeception\Helper;
 
+use Cake\Routing\Router;
+use InvalidArgumentException;
+
 trait RouterTrait
 {
 
@@ -74,7 +77,7 @@ trait RouterTrait
         }
 
         if (count($parts) < 2) {
-            throw new \InvalidArgumentException(sprintf('Invalid action name [%s]', $action));
+            throw new InvalidArgumentException(sprintf('Invalid action name [%s]', $action));
         }
 
         list($controller, $action) = $parts;

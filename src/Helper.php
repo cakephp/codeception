@@ -9,7 +9,6 @@ use Cake\Codeception\Helper\SessionTrait;
 use Cake\Codeception\Helper\ViewTrait;
 use Cake\Core\Configure;
 use Cake\Event\EventManager;
-use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\TestSuite\Fixture\FixtureManager;
 use Codeception\Lib\Framework;
