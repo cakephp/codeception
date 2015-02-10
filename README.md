@@ -164,7 +164,21 @@ $I->seeCurrentActionIs('posts.add');
 
 ### Session
 
-...
+#### Assert key(/value) in session with `seeInSession($key, $value = null)`
+
+```php
+$I->seeInSession('redirect'); // only checks the key exists.
+$I->seeInSession('redirect', Router::url(['_name' => 'dashboard']));
+$I->seeInSession(['redirect', Router::url(['_name' => 'dashboard'])]);
+```
+
+#### Assert key(/value) not in session with `dontSeeInSession($key, $value = null)`
+
+```php
+$I->dontSeeInSession('redirect'); // only checks the key does not exist.
+$I->dontSeeInSession('redirect', Router::url(['_name' => 'dashboard']));
+$I->dontSeeInSession(['redirect', Router::url(['_name' => 'dashboard'])]);
+```
 
 ### View
 

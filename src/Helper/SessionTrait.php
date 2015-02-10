@@ -4,49 +4,61 @@ namespace Cake\Codeception\Helper;
 trait SessionTrait
 {
 
-    public function seeSessionHasValues(array $bindings)
-    {
-        foreach ($bindings as $key => $value) {
-            if (is_int($key)) {
-                $this->seeInSession($value);
-                continue;
-            }
-            $this->seeInSession($key, $value);
-        }
-    }
-
+    /**
+     * Asserts that given key (and value) exist in the session.
+     *
+     * @param string|array $key Session key or array of key/values.
+     * @param mixed $value Value to check for. If `NULL`, check only key.
+     */
     public function seeInSession($key, $value = null)
     {
         if (is_array($key)) {
-            $this->sessionHasValues($key);
+            array_walk($key, function ($v, $k) {
+                if (is_int($k)) {
+                    $k = $v;
+                    $v = null;
+                }
+                $this->seeInSession($k, $v);
+            });
             return;
         }
+
+        $session = $this->grabService('session');
 
         if (is_null($value)) {
-            $this->assertTrue($this->client->cake['request']->session()->check($key));
+            $this->assertTrue($session->check($key));
             return;
         }
 
-        $this->assertEquals($value, $this->client->cake['request']->session()->read($key));
+        $this->assertEquals($value, $session->read($key));
     }
 
+    /**
+     * Asserts that given key (and value) do not exist in the session.
+     *
+     * @param string|array $key Session key or array of key/values.
+     * @param mixed $value Value to check for. If `NULL`, check only key.
+     */
     public function dontSeeInSession($key, $value = null)
     {
-        if (is_null($value)) {
-            $this->assertFalse($this->client->cake['request']->session()->check($key));
+        if (is_array($key)) {
+            array_walk($key, function ($v, $k) {
+                if (is_int($k)) {
+                    $k = $v;
+                    $v = null;
+                }
+                $this->dontSeeInSession($k, $v);
+            });
             return;
         }
 
-        $this->assertNotEquals($value, $this->client->cake['request']->session()->read($key));
-    }
+        $session = $this->grabService('session');
 
-    public function seeSessionErrorMessage(array $bindings)
-    {
-        // Not yet implemented.
-    }
+        if (is_null($value)) {
+            $this->assertFalse($session->check($key));
+            return;
+        }
 
-    public function seeSessionHasErrors()
-    {
-        // Not yet implemented.
+        $this->assertNotEquals($value, $session->read($key));
     }
 }
