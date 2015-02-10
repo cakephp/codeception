@@ -10,17 +10,13 @@ use Symfony\Component\Yaml\Yaml;
 class Bootstrap extends \Codeception\Command\Bootstrap
 {
     protected $actorSuffix = 'Tester';
-    protected $helperDir = 'src/TestSuite/Codeception/Module';
+    protected $helperDir = 'src/TestSuite/Codeception';
     protected $logDir = 'tmp/tests';
     protected $dataDir = 'tests/Fixture';
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $this->namespace = rtrim($input->getOption('namespace'), '\\');
-
-        if (empty($this->namespace)) {
-            $this->namespace = 'App\TestSuite';
-        }
 
         if ($input->getOption('actor')) {
             $this->actorSuffix = $input->getOption('actor');
@@ -94,7 +90,7 @@ class Bootstrap extends \Codeception\Command\Bootstrap
             'modules' => [
                 'enabled' => [
                     'Cake\Codeception\Helper',
-                    $actor . 'Helper'
+                    'App\TestSuite\Codeception\\' . $actor . 'Helper'
                 ]
             ],
         ];
@@ -117,7 +113,7 @@ class Bootstrap extends \Codeception\Command\Bootstrap
                 'enabled' => [
                     'Cake\Codeception\Helper',
                     'PhpBrowser',
-                    $actor . 'Helper'
+                    'App\TestSuite\Codeception\\' . $actor . 'Helper'
                 ],
                 'config'  => [
                     'PhpBrowser' => [
@@ -145,7 +141,7 @@ class Bootstrap extends \Codeception\Command\Bootstrap
             'modules' => [
                 'enabled' => [
                     'Asserts',
-                    $actor . 'Helper'
+                    'App\TestSuite\Codeception\\' . $actor . 'Helper'
                 ]
             ],
         ];

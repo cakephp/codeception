@@ -8,7 +8,7 @@ class Helper extends \Codeception\Lib\Generator\Helper
 
     protected $template = <<<EOF
 <?php
-namespace {{namespace}}Codeception\Module;
+namespace App\TestSuite\Codeception;
 
 use Codeception\Module;
 
