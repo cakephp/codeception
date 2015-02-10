@@ -31,7 +31,7 @@ class Bootstrap extends \Codeception\Command\Bootstrap
 
         $realpath = realpath($path);
         chdir($path);
-        @mkdir('src/TestSuite/Codeception');
+        @mkdir('src/TestSuite');
 
         if (file_exists('codeception.yml')) {
             $output->writeln("<error>\nProject is already initialized in '$path'\n</error>");
