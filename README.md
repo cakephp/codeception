@@ -1,6 +1,9 @@
 CakePHP 3 Codeception Module
 ============================
 
+[![Build Status](https://api.travis-ci.org/cakephp/codeception.png)](https://travis-ci.org/cakephp/codeception)
+[![License](https://poser.pugx.org/cakephp/codeception/license.svg)](https://packagist.org/packages/cakephp/codeception)
+
 A [codeception](http://codeception.com) module to test your CakePHP 3 powered application.
 
 Usage
