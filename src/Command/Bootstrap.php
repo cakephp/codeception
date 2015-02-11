@@ -188,5 +188,4 @@ class Bootstrap extends \Codeception\Command\Bootstrap
         $output->writeln("tests/acceptance created           <- acceptance tests");
         $output->writeln("tests/acceptance.suite.yml written <- acceptance tests suite configuration");
     }
-
 }

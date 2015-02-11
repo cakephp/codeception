@@ -52,6 +52,7 @@ class Helper extends Framework
 
     protected $testCase = null;
 
+// @codingStandardsIgnoreStart
     public function _before(TestCase $test)
     {
         if (method_exists($test, 'getTestClass')) {
@@ -78,20 +79,21 @@ class Helper extends Framework
             $this->loadFixtures($this->testCase->fixtures);
         }
 
-        $this->client = $this->_getConnectorInstance();
+        $this->client = $this->getConnectorInstance();
 
-        $this->_snapshotApplication();
-        $this->_reloadRoutes();
+        $this->snapshotApplication();
+        $this->reloadRoutes();
     }
 
     public function _after(TestCase $test)
     {
-        $this->_resetApplication();
+        $this->resetApplication();
         $this->fixtureManager->unload($this->testCase);
         if ($this->testCase->dropTables) {
             $this->fixtureManager->shutDown();
         }
     }
+// @codingStandardsIgnoreEnd
 
     public function loadFixtures($fixtures)
     {
@@ -120,12 +122,12 @@ class Helper extends Framework
         return $this->client->cake[$class];
     }
 
-    protected function _reloadRoutes()
+    protected function reloadRoutes()
     {
         Router::reload();
     }
 
-    protected function _resetApplication()
+    protected function resetApplication()
     {
         if (!empty($this->configure)) {
             Configure::clear();
@@ -133,14 +135,14 @@ class Helper extends Framework
         }
     }
 
-    protected function _snapshotApplication()
+    protected function snapshotApplication()
     {
         if (empty($this->configure)) {
             $this->configure = Configure::read();
         }
     }
 
-    protected function _getConnectorInstance(array $server = [])
+    protected function getConnectorInstance(array $server = [])
     {
         return new Connector($server);
     }
