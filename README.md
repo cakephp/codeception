@@ -20,7 +20,7 @@ Edit your [`composer.json`][appcomposer] file to include the installer script:
     },
 ```
 
-The line with `Cake\\Codeception\\Console\\Installer::postInstall` is the one that
+The line with `Cake\\Codeception\\Console\\Installer::postAutoloadDump` is the one that
 you will be adding.
 
 Now, from the command-line:
