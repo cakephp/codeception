@@ -16,7 +16,10 @@ before_install:
   - vendor/bin/codecept bootstrap
   - vendor/bin/codecept generate:cest functional Foo
   - vendor/bin/codecept generate:cept functional Foo
-  - cd ../..
+  - cd ../sample_app
+  - composer install
 
 script:
+  - vendor/bin/codecept run
+  - cd ../..
   - phpunit
