@@ -158,6 +158,10 @@ class Bootstrap extends \Codeception\Command\Bootstrap
     {
         @mkdir("tests/$suite");
         file_put_contents(
+            "tests/$suite/.gitignore",
+            $actor . 'Tester.php'
+        );
+        file_put_contents(
             "tests/$suite/bootstrap.php",
             "<?php\n// Here you can initialize variables that will be available to your tests\n"
         );

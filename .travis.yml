@@ -18,6 +18,7 @@ before_install:
   - vendor/bin/codecept generate:cept functional Foo
   - cd ../sample_app
   - composer install
+  - vendor/bin/codecept build
 
 script:
   - vendor/bin/codecept run

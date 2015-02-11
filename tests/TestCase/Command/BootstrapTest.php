@@ -23,16 +23,19 @@ class BootstrapTest extends TestCase
         $this->assertTrue(is_dir($acceptanceDir), 'Acceptance test suite directory must be auto-created');
         $this->assertTrue(file_exists($acceptanceDir . 'AcceptanceTester.php'), 'AcceptanceTester must be auto-generated');
         $this->assertTrue(file_exists($acceptanceDir . 'bootstrap.php'), 'Acceptance bootstrap.php must be auto-created');
+        $this->assertTrue(file_exists($acceptanceDir . '.gitignore'), 'Acceptance .gitignore must be auto-created');
 
         $functionalDir = $testsDir . 'functional' . DS;
         $this->assertTrue(is_dir($functionalDir), 'Functional test suite directory must be auto-created');
         $this->assertTrue(file_exists($functionalDir . 'FunctionalTester.php'), 'FunctionalTester must be auto-generated');
         $this->assertTrue(file_exists($functionalDir . 'bootstrap.php'), 'Functional bootstrap.php must be auto-created');
+        $this->assertTrue(file_exists($functionalDir . '.gitignore'), 'Functional .gitignore must be auto-created');
 
         $unitDir = $testsDir . 'unit' . DS;
         $this->assertTrue(is_dir($unitDir), 'Unit test suite directory must be auto-created');
         $this->assertTrue(file_exists($unitDir . 'UnitTester.php'), 'UnitTester must be auto-generated');
         $this->assertTrue(file_exists($unitDir . 'bootstrap.php'), 'Unit bootstrap.php must be auto-created');
+        $this->assertTrue(file_exists($unitDir . '.gitignore'), 'Unit .gitignore must be auto-created');
     }
 
     public function testCoreConfigurationFileCreated()
