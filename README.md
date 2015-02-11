@@ -32,15 +32,20 @@ Now, from the command-line:
 composer require --dev cakephp/codeception:dev-master
 ```
 
-Then enable it in any test suite configuration like so:
+Once installed, you can now run `bootstrap` which will create all the codeception required files
+in your application:
 
-```yaml
-modules:
-  enabled:
-    - Cake\Codeception\Helper
+```
+vendor/bin/codecept bootstrap
 ```
 
-## Example Usage
+This creates `codeception.yml`, `src/TestSuite/Codeception` and codeception files/folders in your `tests`.
+
+To better understand how Codeception tests work, please check the [official documentation][codeception_docs].
+
+[codeception_docs]:http://codeception.com/docs/01-Introduction
+
+## Example Cept
 
 ```php
 <?php
@@ -51,7 +56,7 @@ $I->see('Submit');
 $I->submitForm('#add', [
     'title' => 'First bookmark',
 ]);
-$I->seeSessionHasValues([
+$I->seeInSession([
     'Flash'
 ]);
 ```
