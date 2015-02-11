@@ -62,7 +62,7 @@ return [
      *   You should treat it as extremely sensitive data.
      */
     'Security' => [
-        'salt' => '__SALT__',
+        'salt' => 'd32ab76c918803861140b9e63aaf245b84c983fff79f985518eb28efb5f8707f',
     ],
 
     /**
