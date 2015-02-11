@@ -8,6 +8,7 @@ php:
   - 5.6
 
 before_install:
+  - composer install
   - composer create-project --prefer-dist -s dev --no-interaction cakephp/app tests/test_app
   - cp tests/Fixture/composer.json tests/test_app/.
   - cd tests/test_app
