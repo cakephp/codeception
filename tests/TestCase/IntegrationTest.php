@@ -7,7 +7,7 @@ class IntegrationTest extends TestCase
 {
     public function testCodeceptProperlyOverwritten()
     {
-        $result = file_get_contents(dirname(__DIR__) . '/test_app/vendor/bin/codecept');
+        $result = file_get_contents(TEST_APP_BIN . 'codecept');
 
         $expected = 'new Cake\Codeception\Command\Build';
         $this->assertContains($expected, $result, 'Codecept must use cake build command');
