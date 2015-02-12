@@ -1,7 +1,7 @@
 <?php
 namespace Cake\Codeception\Command;
 
-use Codeception\Lib\Generator\Group as GroupGenerator;
+use Cake\Codeception\Lib\Generator\Group as GroupGenerator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
