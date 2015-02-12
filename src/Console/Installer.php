@@ -16,6 +16,7 @@ class Installer
         $needles = [
             'Build',
             'Bootstrap',
+            'GenerateGroup'
         ];
 
         foreach ($needles as $needle) {
