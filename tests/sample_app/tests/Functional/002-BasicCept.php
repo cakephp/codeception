@@ -1,4 +1,4 @@
-<?php
+<?php use App\Test\Functional\FunctionalTester;
 $I = new FunctionalTester($scenario);
 $I->wantTo('view the cookies index page');
 $I->amOnRoute(['controller' => 'Cookies', 'action' => 'index']);

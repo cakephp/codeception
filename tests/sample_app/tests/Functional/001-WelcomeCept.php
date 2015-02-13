@@ -1,4 +1,4 @@
-<?php
+<?php use App\Test\Functional\FunctionalTester;
 $I = new FunctionalTester($scenario);
 $I->wantTo('check the homepage');
 $I->amOnPage('/');
