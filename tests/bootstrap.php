@@ -1,4 +1,4 @@
-<?php
+<?php // @codingStandardsIgnoreFile
 
 if (!defined('DS')) {
     define('DS', DIRECTORY_SEPARATOR);

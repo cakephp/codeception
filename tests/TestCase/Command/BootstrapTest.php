@@ -10,8 +10,10 @@ class BootstrapTest extends TestCase
     {
         $testSuiteDir = TEST_APP_ROOT . 'src' . DS . 'TestSuite' . DS . 'Codeception' . DS;
         $this->assertTrue(is_dir($testSuiteDir), 'src/TestSuite/Codeception directory must be auto-created');
+        // @codingStandardsIgnoreStart
         $this->assertTrue(file_exists($testSuiteDir . 'AcceptanceHelper.php'), 'AcceptanceHelper must be auto-created');
         $this->assertTrue(file_exists($testSuiteDir . 'FunctionalHelper.php'), 'FunctionalHelper must be auto-created');
+        // @codingStandardsIgnoreEnd
         $this->assertTrue(file_exists($testSuiteDir . 'UnitHelper.php'), 'UnitHelper must be auto-created');
     }
 
@@ -21,14 +23,18 @@ class BootstrapTest extends TestCase
 
         $acceptanceDir = $testsDir . 'acceptance' . DS;
         $this->assertTrue(is_dir($acceptanceDir), 'Acceptance test suite directory must be auto-created');
+        // @codingStandardsIgnoreStart
         $this->assertTrue(file_exists($acceptanceDir . 'AcceptanceTester.php'), 'AcceptanceTester must be auto-generated');
         $this->assertTrue(file_exists($acceptanceDir . 'bootstrap.php'), 'Acceptance bootstrap.php must be auto-created');
+        // @codingStandardsIgnoreEnd
         $this->assertTrue(file_exists($acceptanceDir . '.gitignore'), 'Acceptance .gitignore must be auto-created');
 
         $functionalDir = $testsDir . 'functional' . DS;
         $this->assertTrue(is_dir($functionalDir), 'Functional test suite directory must be auto-created');
+        // @codingStandardsIgnoreStart
         $this->assertTrue(file_exists($functionalDir . 'FunctionalTester.php'), 'FunctionalTester must be auto-generated');
         $this->assertTrue(file_exists($functionalDir . 'bootstrap.php'), 'Functional bootstrap.php must be auto-created');
+        // @codingStandardsIgnoreEnd
         $this->assertTrue(file_exists($functionalDir . '.gitignore'), 'Functional .gitignore must be auto-created');
 
         $unitDir = $testsDir . 'unit' . DS;
@@ -73,5 +79,4 @@ class BootstrapTest extends TestCase
         $result = file_get_contents($configFilePath);
         $this->assertNotContains('Cake\Codeception\Helper', $result, 'Cake helper module must not be enabled');
     }
-
 }
