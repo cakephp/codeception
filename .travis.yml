@@ -9,17 +9,17 @@ php:
 
 before_install:
   - composer install
-  - composer require --prefer-dist --dev squizlabs/php_codesniffer:~2.0
-  - composer create-project --prefer-dist -s dev --no-interaction cakephp/app tests/test_app
+  - composer require --prefer-source --dev squizlabs/php_codesniffer:~2.0
+  - composer create-project --prefer-source -s dev --no-interaction cakephp/app tests/test_app
   - cp tests/Fixture/composer.json tests/test_app/.
   - cd tests/test_app
-  - composer require --prefer-dist --dev cakephp/codeception:dev-$TRAVIS_BRANCH#$TRAVIS_COMMIT
+  - composer require --prefer-source --dev cakephp/codeception:dev-$TRAVIS_BRANCH#$TRAVIS_COMMIT
   - vendor/bin/codecept bootstrap
   - vendor/bin/codecept generate:cest Functional Foo
   - vendor/bin/codecept generate:cept Functional Foo
   - cd ../sample_app
   - cp ../test_app/composer.json .
-  - composer install --prefer-dist
+  - composer install --prefer-source
   - vendor/bin/codecept build
 
 script:
