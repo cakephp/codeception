@@ -39,7 +39,35 @@ in your application:
 vendor/bin/codecept bootstrap
 ```
 
-This creates `codeception.yml`, `src/TestSuite/Codeception` and codeception files/folders in your `tests`.
+This creates the following files/folders in your `app` directory:
+
+```
+|-codeception.yml
+|-src/
+|---TestSuite/
+|-----Codeception/
+|-------AcceptanceHelper.php
+|-------FunctionalHelper.php
+|-------UnitHelper.php
+|-tests/
+|---Acceptance.suite.yml
+|---Functional.suite.yml
+|---Unit.suite.yml
+|---Acceptance/
+|-----.gitignore
+|-----bootstrap.php
+|-----AcceptanceTester.php
+|---Fixture/
+|-----dump.sql
+|---Functional/
+|-----.gitignore
+|-----bootstrap.php
+|-----FunctionalTester.php
+|---Unit/
+|-----.gitignore
+|-----bootstrap.php
+|-----UnitTester.php
+```
 
 To better understand how Codeception tests work, please check the [official documentation][codeception_docs].
 
