@@ -1,10 +1,11 @@
 #
 # CakePHP Codeception Functional Test Suite Configuration
 #
-# Allows you to emulate web requests and make the application 
+# Allows you to emulate web requests and make the application
 # process them.
 #
 
 class_name: FunctionalTester
+namespace: App\Test\Functional
 modules:
     enabled: [Cake\Codeception\Helper, App\TestSuite\Codeception\FunctionalHelper]
