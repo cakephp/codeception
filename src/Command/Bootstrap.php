@@ -87,6 +87,7 @@ class Bootstrap extends \Codeception\Command\Bootstrap
     {
         $suiteConfig = [
             'class_name' => $actor . $this->actorSuffix,
+            'namespace' => 'App\Test\Functional',
             'modules' => [
                 'enabled' => [
                     'Cake\Codeception\Helper',
@@ -109,6 +110,7 @@ class Bootstrap extends \Codeception\Command\Bootstrap
     {
         $suiteConfig = [
             'class_name' => $actor . $this->actorSuffix,
+            'namespace' => 'App\Test\Acceptance',
             'modules' => [
                 'enabled' => [
                     'Cake\Codeception\Helper',
@@ -138,6 +140,7 @@ class Bootstrap extends \Codeception\Command\Bootstrap
     {
         $suiteConfig = [
             'class_name' => $actor . $this->actorSuffix,
+            'namespace' => 'App\Test\Unit',
             'modules' => [
                 'enabled' => [
                     'Asserts',

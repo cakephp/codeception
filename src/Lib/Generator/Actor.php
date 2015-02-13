@@ -13,6 +13,8 @@ class Actor extends \Codeception\Lib\Generator\Actor
 // You should not change it manually as it will be overwritten on next build
 // @codingStandardsIgnoreFile
 
+{{namespace}}
+
 {{use}}
 use Codeception\Actor;
 
