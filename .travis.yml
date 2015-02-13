@@ -15,8 +15,8 @@ before_install:
   - cd tests/test_app
   - composer require --dev cakephp/codeception:dev-master
   - vendor/bin/codecept bootstrap
-  - vendor/bin/codecept generate:cest functional Foo
-  - vendor/bin/codecept generate:cept functional Foo
+  - vendor/bin/codecept generate:cest Functional Foo
+  - vendor/bin/codecept generate:cept Functional Foo
   - cd ../sample_app
   - composer install
   - vendor/bin/codecept build
