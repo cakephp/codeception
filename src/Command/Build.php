@@ -47,7 +47,7 @@ class Build extends \Codeception\Command\Build
             $this->output->writeln(sprintf(
                 '%s.php generated succesfully, %s methods added',
                 $settings['class_name'],
-                $gen->getNumMethods(),
+                $gen->getNumMethods()
             ));
         }
     }
