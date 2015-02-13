@@ -114,7 +114,7 @@ class Helper extends Framework
      */
     public function expectedCakePHPVersion($ver, $operator = 'ge')
     {
-        $this->assertTrue(version_compare($ver, Configure::read('Cake.version'), $operator));
+        $this->assertTrue(version_compare($ver, Configure::version(), $operator));
     }
 
     public function grabService($class)
