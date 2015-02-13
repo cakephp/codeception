@@ -22,6 +22,7 @@ class Installer
         $needles = [
             'Build',
             'Bootstrap',
+            'GenerateCest',
             'GenerateGroup'
         ];
 
