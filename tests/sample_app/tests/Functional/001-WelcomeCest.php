@@ -1,16 +1,10 @@
 <?php
-use \FunctionalTester;
+namespace App\Test\Functional;
+
+use App\Test\Functional\FunctionalTester;
 
 class WelcomeCest
 {
-    public function _before(FunctionalTester $I)
-    {
-    }
-
-    public function _after(FunctionalTester $I)
-    {
-    }
-
     // tests
     public function checkTheHomepage(FunctionalTester $I)
     {
