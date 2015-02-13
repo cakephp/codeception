@@ -21,7 +21,7 @@ class BootstrapTest extends TestCase
     {
         $testsDir = TEST_APP_ROOT . 'tests' . DS;
 
-        $acceptanceDir = $testsDir . 'acceptance' . DS;
+        $acceptanceDir = $testsDir . 'Acceptance' . DS;
         $this->assertTrue(is_dir($acceptanceDir), 'Acceptance test suite directory must be auto-created');
         // @codingStandardsIgnoreStart
         $this->assertTrue(file_exists($acceptanceDir . 'AcceptanceTester.php'), 'AcceptanceTester must be auto-generated');
@@ -29,7 +29,7 @@ class BootstrapTest extends TestCase
         // @codingStandardsIgnoreEnd
         $this->assertTrue(file_exists($acceptanceDir . '.gitignore'), 'Acceptance .gitignore must be auto-created');
 
-        $functionalDir = $testsDir . 'functional' . DS;
+        $functionalDir = $testsDir . 'Functional' . DS;
         $this->assertTrue(is_dir($functionalDir), 'Functional test suite directory must be auto-created');
         // @codingStandardsIgnoreStart
         $this->assertTrue(file_exists($functionalDir . 'FunctionalTester.php'), 'FunctionalTester must be auto-generated');
@@ -37,7 +37,7 @@ class BootstrapTest extends TestCase
         // @codingStandardsIgnoreEnd
         $this->assertTrue(file_exists($functionalDir . '.gitignore'), 'Functional .gitignore must be auto-created');
 
-        $unitDir = $testsDir . 'unit' . DS;
+        $unitDir = $testsDir . 'Unit' . DS;
         $this->assertTrue(is_dir($unitDir), 'Unit test suite directory must be auto-created');
         $this->assertTrue(file_exists($unitDir . 'UnitTester.php'), 'UnitTester must be auto-generated');
         $this->assertTrue(file_exists($unitDir . 'bootstrap.php'), 'Unit bootstrap.php must be auto-created');
@@ -55,7 +55,7 @@ class BootstrapTest extends TestCase
 
     public function testAcceptanceConfigurationFileCreated()
     {
-        $configFilePath = TEST_APP_ROOT . 'tests' . DS . 'acceptance.suite.yml';
+        $configFilePath = TEST_APP_ROOT . 'tests' . DS . 'Acceptance.suite.yml';
         $this->assertTrue(file_exists($configFilePath), 'File `acceptance.suite.yml` must be auto-created');
 
         $result = file_get_contents($configFilePath);
@@ -64,7 +64,7 @@ class BootstrapTest extends TestCase
 
     public function testFunctionalConfigurationFileCreated()
     {
-        $configFilePath = TEST_APP_ROOT . 'tests' . DS . 'functional.suite.yml';
+        $configFilePath = TEST_APP_ROOT . 'tests' . DS . 'Functional.suite.yml';
         $this->assertTrue(file_exists($configFilePath), 'File `functional.suite.yml` must be auto-created');
 
         $result = file_get_contents($configFilePath);
@@ -73,7 +73,7 @@ class BootstrapTest extends TestCase
 
     public function testUnitConfigurationFileCreated()
     {
-        $configFilePath = TEST_APP_ROOT . 'tests' . DS . 'unit.suite.yml';
+        $configFilePath = TEST_APP_ROOT . 'tests' . DS . 'Unit.suite.yml';
         $this->assertTrue(file_exists($configFilePath), 'File `unit.suite.yml` must be auto-created');
 
         $result = file_get_contents($configFilePath);
