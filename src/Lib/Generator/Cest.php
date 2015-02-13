@@ -1,21 +1,23 @@
 <?php
 namespace Cake\Codeception\Lib\Generator;
 
-class Cest {
+class Cest extends \Codeception\Lib\Generator\Cest
+{
 
     protected $template = <<<EOF
 <?php
 {{namespace}}
 
+
 class {{name}}Cest
 {
     // @codingStandardsIgnoreStart
-    public function _before(UnitTester $I)// @codingStandardsIgnoreEnd
+    public function _before({{actor}} \$I)// @codingStandardsIgnoreEnd
     {
     }
 
     // @codingStandardsIgnoreStart
-    public function _after(UnitTester $I)// @codingStandardsIgnoreEnd
+    public function _after({{actor}} \$I)// @codingStandardsIgnoreEnd
     {
     }
 
