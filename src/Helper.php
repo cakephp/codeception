@@ -117,16 +117,33 @@ class Helper extends Framework
         $this->assertTrue(version_compare($ver, Configure::version(), $operator));
     }
 
+    /**
+     * Returns one of the instantiated services
+     *
+     * @param [type] $class [description]
+     * @return object Cake object of requested type.
+     * @see \Cake\Codeception\Connector::$cake
+     */
     public function grabService($class)
     {
         return $this->client->cake[$class];
     }
 
+    /**
+     * Reloads the defined routes.
+     *
+     * @return void
+     */
     protected function reloadRoutes()
     {
         Router::reload();
     }
 
+    /**
+     * Resets the application's configuration.
+     *
+     * @return void
+     */
     protected function resetApplication()
     {
         if (!empty($this->configure)) {
@@ -135,6 +152,11 @@ class Helper extends Framework
         }
     }
 
+    /**
+     * Snapshots the application's configuration.
+     *
+     * @return void
+     */
     protected function snapshotApplication()
     {
         if (empty($this->configure)) {
@@ -142,6 +164,12 @@ class Helper extends Framework
         }
     }
 
+    /**
+     * Instantiate a connector.
+     *
+     * @param array $server
+     * @return \Cake\Codeception\Connector
+     */
     protected function getConnectorInstance(array $server = [])
     {
         return new Connector($server);

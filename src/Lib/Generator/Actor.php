@@ -6,6 +6,12 @@ use Codeception\Util\Template;
 
 class Actor extends \Codeception\Lib\Generator\Actor
 {
+    /**
+     * Template used by `codecept build` to create the tester classes
+     * in the different suites folders (i.e. `FunctionalTester.php`).
+     *
+     * @var string
+     */
     protected $template = <<<EOF
 <?php //[STAMP] {{hash}}
 

@@ -5,6 +5,11 @@ use Cake\Codeception\Lib\Generator\Actor as ActorGenerator;
 
 class Build extends \Codeception\Command\Build
 {
+    /**
+     * Generates the actors (*Tester class) files.
+     *
+     * @param string $configFile Path to YAML configuration to use.
+     */
     protected function buildActorsForConfig($configFile)
     {
         $config = $this->getGlobalConfig($configFile);
