@@ -23,5 +23,5 @@ before_install:
 
 script:
   - vendor/bin/codecept run && cd ../..
-  - vendor/bin/phpcs --standard=PSR2 --extensions=php src/ tests/
+  - vendor/bin/phpcs --standard=PSR2 --extensions=php --ignore=tests/*_app src/ tests/
   - phpunit
