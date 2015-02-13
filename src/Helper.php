@@ -52,6 +52,7 @@ class Helper extends Framework
 
     protected $testCase = null;
 
+// @codingStandardsIgnoreStart
     public function _before(TestCase $test)
     {
         if (method_exists($test, 'getTestClass')) {
@@ -78,20 +79,21 @@ class Helper extends Framework
             $this->loadFixtures($this->testCase->fixtures);
         }
 
-        $this->client = $this->_getConnectorInstance();
+        $this->client = $this->getConnectorInstance();
 
-        $this->_snapshotApplication();
-        $this->_reloadRoutes();
+        $this->snapshotApplication();
+        $this->reloadRoutes();
     }
 
     public function _after(TestCase $test)
     {
-        $this->_resetApplication();
+        $this->resetApplication();
         $this->fixtureManager->unload($this->testCase);
         if ($this->testCase->dropTables) {
             $this->fixtureManager->shutDown();
         }
     }
+// @codingStandardsIgnoreEnd
 
     public function loadFixtures($fixtures)
     {
@@ -112,20 +114,37 @@ class Helper extends Framework
      */
     public function expectedCakePHPVersion($ver, $operator = 'ge')
     {
-        $this->assertTrue(version_compare($ver, Configure::read('Cake.version'), $operator));
+        $this->assertTrue(version_compare($ver, Configure::version(), $operator));
     }
 
+    /**
+     * Returns one of the instantiated services
+     *
+     * @param [type] $class [description]
+     * @return object Cake object of requested type.
+     * @see \Cake\Codeception\Connector::$cake
+     */
     public function grabService($class)
     {
         return $this->client->cake[$class];
     }
 
-    protected function _reloadRoutes()
+    /**
+     * Reloads the defined routes.
+     *
+     * @return void
+     */
+    protected function reloadRoutes()
     {
         Router::reload();
     }
 
-    protected function _resetApplication()
+    /**
+     * Resets the application's configuration.
+     *
+     * @return void
+     */
+    protected function resetApplication()
     {
         if (!empty($this->configure)) {
             Configure::clear();
@@ -133,14 +152,25 @@ class Helper extends Framework
         }
     }
 
-    protected function _snapshotApplication()
+    /**
+     * Snapshots the application's configuration.
+     *
+     * @return void
+     */
+    protected function snapshotApplication()
     {
         if (empty($this->configure)) {
             $this->configure = Configure::read();
         }
     }
 
-    protected function _getConnectorInstance(array $server = [])
+    /**
+     * Instantiate a connector.
+     *
+     * @param array $server
+     * @return \Cake\Codeception\Connector
+     */
+    protected function getConnectorInstance(array $server = [])
     {
         return new Connector($server);
     }

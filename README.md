@@ -1,6 +1,9 @@
 CakePHP 3 Codeception Module
 ============================
 
+[![Build Status](https://api.travis-ci.org/cakephp/codeception.png)](https://travis-ci.org/cakephp/codeception)
+[![License](https://poser.pugx.org/cakephp/codeception/license.svg)](https://packagist.org/packages/cakephp/codeception)
+
 A [codeception](http://codeception.com) module to test your CakePHP 3 powered application.
 
 Usage
@@ -29,15 +32,57 @@ Now, from the command-line:
 composer require --dev cakephp/codeception:dev-master
 ```
 
-Then enable it in any test suite configuration like so:
+Once installed, you can now run `bootstrap` which will create all the codeception required files
+in your application:
 
-```yaml
-modules:
-  enabled:
-    - Cake\Codeception\Helper
+```
+vendor/bin/codecept bootstrap
 ```
 
-## Example Usage
+This creates the following files/folders in your `app` directory:
+
+```
+|-codeception.yml
+|-src/
+|---TestSuite/
+|-----Codeception/
+|-------AcceptanceHelper.php
+|-------FunctionalHelper.php
+|-------UnitHelper.php
+|-tests/
+|---Acceptance.suite.yml
+|---Functional.suite.yml
+|---Unit.suite.yml
+|---Acceptance/
+|-----.gitignore
+|-----bootstrap.php
+|-----AcceptanceTester.php
+|---Fixture/
+|-----dump.sql
+|---Functional/
+|-----.gitignore
+|-----bootstrap.php
+|-----FunctionalTester.php
+|---Unit/
+|-----.gitignore
+|-----bootstrap.php
+|-----UnitTester.php
+```
+
+As you might have noticed, the CakePHP implementation differs in a couple things:
+
+- uses CamelCase suite names (`Functional` vs. `functional`)
+- uses `bootstrap.php`, no underscore prefix (vs. `_bootstrap.php`)
+- uses `src/TestSuite/Codeception` for custom modules (helpers) (vs. `tests/_helpers`)
+- uses `tmp/tests` to store logs (vs. `tests/_logs`)
+- adds a `.gitignore` to never track auto-generated files
+- adds custom templates for various generated files using the `codecept` binary
+
+To better understand how Codeception tests work, please check the [official documentation][codeception_docs].
+
+[codeception_docs]:http://codeception.com/docs/01-Introduction
+
+## Example Cept
 
 ```php
 <?php
@@ -48,7 +93,7 @@ $I->see('Submit');
 $I->submitForm('#add', [
     'title' => 'First bookmark',
 ]);
-$I->seeSessionHasValues([
+$I->seeInSession([
     'Flash'
 ]);
 ```

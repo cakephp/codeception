@@ -5,6 +5,11 @@ use Cake\Codeception\Lib\Generator\Actor as ActorGenerator;
 
 class Build extends \Codeception\Command\Build
 {
+    /**
+     * Generates the actors (*Tester class) files.
+     *
+     * @param string $configFile Path to YAML configuration to use.
+     */
     protected function buildActorsForConfig($configFile)
     {
         $config = $this->getGlobalConfig($configFile);
@@ -19,19 +24,31 @@ class Build extends \Codeception\Command\Build
         }
 
         if (!empty($suites)) {
-            $this->output->writeln("<info>Building Actor classes for suites: ".implode(', ', $suites).'</info>');
+            $this->output->writeln(sprintf(
+                '<info>Building Actor classes for suites: %s</info>',
+                implode(', ', $suites)
+            ));
         }
+
         foreach ($suites as $suite) {
             $settings = $this->getSuiteConfig($suite, $configFile);
             $gen = new ActorGenerator($settings);
-            $this->output->writeln('<info>'. $gen->getActorName() . "</info> includes modules: ".implode(', ', $gen->getModules()));
+            $this->output->writeln(sprintf(
+                '<info>%s</info> includes modules: %s',
+                $gen->getActorName(),
+                implode(', ', $gen->getModules())
+            ));
+
             $contents = $gen->produce();
 
-            @mkdir($settings['path'],0755, true);
+            @mkdir($settings['path'], 0755, true);
             $file = $settings['path'].$this->getClassName($settings['class_name']).'.php';
             $this->save($file, $contents, true);
-            $this->output->writeln("{$settings['class_name']}.php generated successfully. ".$gen->getNumMethods()." methods added");
+            $this->output->writeln(sprintf(
+                '%s.php generated succesfully, %s methods added',
+                $settings['class_name'],
+                $gen->getNumMethods(),
+            ));
         }
     }
-
 }

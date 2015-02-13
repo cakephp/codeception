@@ -1,0 +1,27 @@
+language: php
+
+sudo: false
+
+php:
+  - 5.4
+  - 5.5
+  - 5.6
+
+before_install:
+  - composer install
+  - composer require --dev squizlabs/php_codesniffer:~2.0
+  - composer create-project --prefer-dist -s dev --no-interaction cakephp/app tests/test_app
+  - cp tests/Fixture/composer.json tests/test_app/.
+  - cd tests/test_app
+  - composer require --dev cakephp/codeception:dev-master
+  - vendor/bin/codecept bootstrap
+  - vendor/bin/codecept generate:cest functional Foo
+  - vendor/bin/codecept generate:cept functional Foo
+  - cd ../sample_app
+  - composer install
+  - vendor/bin/codecept build
+
+script:
+  - vendor/bin/codecept run && cd ../..
+  - vendor/bin/phpcs --standard=PSR2 --extensions=php src/ tests/
+  - phpunit

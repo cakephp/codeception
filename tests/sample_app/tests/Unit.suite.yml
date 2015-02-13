@@ -1,0 +1,7 @@
+#
+# CakePHP Codeception Unit Test Suite Configuration
+#
+class_name: UnitTester
+namespace: App\Test\Unit
+modules:
+    enabled: [Asserts, App\TestSuite\Codeception\UnitHelper]

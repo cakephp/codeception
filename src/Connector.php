@@ -164,7 +164,8 @@ class Connector extends Client
      * [authSpy description]
      * @param \Cake\Event\Event $event Event.
      */
-    public function authSpy(Event $event) {
+    public function authSpy(Event $event)
+    {
         if ($event->subject()->Auth) {
             $this->cake['auth'] = $event->subject()->Auth;
         }
@@ -174,7 +175,8 @@ class Connector extends Client
      * [viewSpy description]
      * @param \Cake\Event\Event $event Event.
      */
-    public function viewSpy(Event $event) {
+    public function viewSpy(Event $event)
+    {
         $this->cake['view'] = $event->subject();
     }
 }

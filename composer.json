@@ -16,5 +16,10 @@
         "psr-4": {
             "Cake\\Codeception\\": "src"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Cake\\Codeception\\Test\\": "tests"
+        }
     }
 }

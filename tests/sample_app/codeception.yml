@@ -1,0 +1,10 @@
+actor: Tester
+paths:
+    tests: tests
+    log: tmp/tests
+    data: tests/Fixture
+    helpers: src/TestSuite/Codeception
+settings:
+    bootstrap: bootstrap.php
+    colors: true
+    memory_limit: 1024M

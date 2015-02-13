@@ -5,6 +5,12 @@ use Composer\Script\Event;
 
 class Installer
 {
+    /**
+     * Overwrites the `codecept` binary to use `Cake\Codeception` classes
+     * where necessary.
+     *
+     * @param \Composer\Script\Event $event Event.
+     */
     public static function postAutoloadDump(Event $event)
     {
         $binDir = dirname(dirname(dirname(dirname(__DIR__)))) . DIRECTORY_SEPARATOR . 'bin';

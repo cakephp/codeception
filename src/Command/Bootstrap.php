@@ -14,6 +14,13 @@ class Bootstrap extends \Codeception\Command\Bootstrap
     protected $logDir = 'tmp/tests';
     protected $dataDir = 'tests/Fixture';
 
+    /**
+     * Executes the `codecept bootstrap` command.
+     *
+     * @param InputInterface $input Input.
+     * @param OutputInterface $output Output.
+     * @return void
+     */
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $this->namespace = rtrim($input->getOption('namespace'), '\\');
@@ -59,6 +66,11 @@ class Bootstrap extends \Codeception\Command\Bootstrap
         $output->writeln("<info>\nBootstrap is done. Check out " . $realpath . "/tests directory</info>");
     }
 
+    /**
+     * Creates the `codeception.yml` file.
+     *
+     * @return void
+     */
     public function createGlobalConfig()
     {
         $basicConfig = [
@@ -83,10 +95,16 @@ class Bootstrap extends \Codeception\Command\Bootstrap
         file_put_contents('codeception.yml', $str);
     }
 
+    /**
+     * Creates the functional suite's test directory and configuration file.
+     *
+     * @param string $actor Name of the actor to use (i.e. FunctionalTester class).
+     */
     protected function createFunctionalSuite($actor = 'Functional')
     {
         $suiteConfig = [
             'class_name' => $actor . $this->actorSuffix,
+            'namespace' => 'App\Test\Functional',
             'modules' => [
                 'enabled' => [
                     'Cake\Codeception\Helper',
@@ -102,13 +120,19 @@ class Bootstrap extends \Codeception\Command\Bootstrap
             '# process them.' . "\n#\n",
             Yaml::dump($suiteConfig, 2)
         ];
-        $this->createSuite('functional', $actor, implode("\n", $docblock));
+        $this->createSuite('Functional', $actor, implode("\n", $docblock));
     }
 
+    /**
+     * Creates the acceptance suite's test directory and configuration file.
+     *
+     * @param string $actor Name of the actor to use (i.e. AcceptancTester class).
+     */
     protected function createAcceptanceSuite($actor = 'Acceptance')
     {
         $suiteConfig = [
             'class_name' => $actor . $this->actorSuffix,
+            'namespace' => 'App\Test\Acceptance',
             'modules' => [
                 'enabled' => [
                     'Cake\Codeception\Helper',
@@ -131,13 +155,19 @@ class Bootstrap extends \Codeception\Command\Bootstrap
             '# WebDriver, create a separate suite.' . "\n#\n",
             Yaml::dump($suiteConfig, 5)
         ];
-        $this->createSuite('acceptance', $actor, implode("\n", $docblock));
+        $this->createSuite('Acceptance', $actor, implode("\n", $docblock));
     }
 
+    /**
+     * Creates the unit suite's test directory and configuration file.
+     *
+     * @param string $actor Name of the actor to use (i.e. UnitTester class).
+     */
     protected function createUnitSuite($actor = 'Unit')
     {
         $suiteConfig = [
             'class_name' => $actor . $this->actorSuffix,
+            'namespace' => 'App\Test\Unit',
             'modules' => [
                 'enabled' => [
                     'Asserts',
@@ -151,9 +181,16 @@ class Bootstrap extends \Codeception\Command\Bootstrap
             '# CakePHP Codeception Unit Test Suite Configuration' . "\n#",
             Yaml::dump($suiteConfig, 2)
         ];
-        $this->createSuite('unit', $actor, implode("\n", $docblock));
+        $this->createSuite('Unit', $actor, implode("\n", $docblock));
     }
 
+    /**
+     * Creates the common test suites artifacts.
+     *
+     * @param string $suite Name of the suite.
+     * @param string $actor Name of the actor to use (*Tester class).
+     * @param string $config YAML configuration.
+     */
     protected function createSuite($suite, $actor, $config)
     {
         @mkdir("tests/$suite");
@@ -172,6 +209,12 @@ class Bootstrap extends \Codeception\Command\Bootstrap
         file_put_contents("tests/$suite.suite.yml", $config);
     }
 
+    /**
+     * Creates the global configuration and all default suites.
+     *
+     * @param OutputInterface $output Output
+     * @return void
+     */
     protected function setup(OutputInterface $output)
     {
         $this->createGlobalConfig();
@@ -188,5 +231,4 @@ class Bootstrap extends \Codeception\Command\Bootstrap
         $output->writeln("tests/acceptance created           <- acceptance tests");
         $output->writeln("tests/acceptance.suite.yml written <- acceptance tests suite configuration");
     }
-
 }
