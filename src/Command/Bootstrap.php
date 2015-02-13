@@ -103,7 +103,7 @@ class Bootstrap extends \Codeception\Command\Bootstrap
             '# process them.' . "\n#\n",
             Yaml::dump($suiteConfig, 2)
         ];
-        $this->createSuite('functional', $actor, implode("\n", $docblock));
+        $this->createSuite('Functional', $actor, implode("\n", $docblock));
     }
 
     protected function createAcceptanceSuite($actor = 'Acceptance')
@@ -133,7 +133,7 @@ class Bootstrap extends \Codeception\Command\Bootstrap
             '# WebDriver, create a separate suite.' . "\n#\n",
             Yaml::dump($suiteConfig, 5)
         ];
-        $this->createSuite('acceptance', $actor, implode("\n", $docblock));
+        $this->createSuite('Acceptance', $actor, implode("\n", $docblock));
     }
 
     protected function createUnitSuite($actor = 'Unit')
@@ -154,7 +154,7 @@ class Bootstrap extends \Codeception\Command\Bootstrap
             '# CakePHP Codeception Unit Test Suite Configuration' . "\n#",
             Yaml::dump($suiteConfig, 2)
         ];
-        $this->createSuite('unit', $actor, implode("\n", $docblock));
+        $this->createSuite('Unit', $actor, implode("\n", $docblock));
     }
 
     protected function createSuite($suite, $actor, $config)
