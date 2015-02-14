@@ -18,7 +18,7 @@ trait DbTrait
         $table = TableRegistry::get($model);
 
         if (!($data instanceof Entity)) {
-            $data = $table->newEntity($properties, ['validate' => false]);
+            $data = $table->newEntity($data, ['validate' => false]);
         }
 
         if (!$table->save($data, ['checkRules' => false])) {
