@@ -13,7 +13,8 @@ class Installer
      */
     public static function postAutoloadDump(Event $event)
     {
-        $binDir = dirname(dirname(dirname(dirname(__DIR__)))) . DIRECTORY_SEPARATOR . 'bin';
+        $binDir = dirname(dirname(dirname(dirname(__DIR__)))) . DIRECTORY_SEPARATOR;
+        $binDir = $binDir . 'codeception' . DIRECTORY_SEPARATOR . 'codeception';
         $binFile = $binDir . DIRECTORY_SEPARATOR . 'codecept';
         $contents = file_get_contents($binFile);
         $from = 'new Codeception\\Command\\';
