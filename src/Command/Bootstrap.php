@@ -170,6 +170,7 @@ class Bootstrap extends \Codeception\Command\Bootstrap
             'namespace' => 'App\Test\Unit',
             'modules' => [
                 'enabled' => [
+                    'Cake\Codeception\Framework',
                     'Asserts',
                     'App\TestSuite\Codeception\\' . $actor . 'Helper'
                 ]
