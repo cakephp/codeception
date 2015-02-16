@@ -3,6 +3,7 @@ namespace Cake\Codeception;
 
 use Cake\Codeception\Helper\ConfigTrait;
 use Cake\Codeception\Helper\DbTrait;
+use Cake\Codeception\Helper\ORMTrait;
 use Cake\Core\Configure;
 use Cake\Event\EventManager;
 use Cake\TestSuite\Fixture\FixtureManager;
@@ -13,6 +14,7 @@ class Framework extends \Codeception\Lib\Framework
 
     use ConfigTrait;
     use DbTrait;
+    use ORMTrait;
 
     /**
      * Module's default configuration.
