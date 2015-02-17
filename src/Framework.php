@@ -22,6 +22,7 @@ class Framework extends \Codeception\Lib\Framework
     public $config = [
         'autoFixtures' => true,
         'dropTables' => false,
+        'cleanUpInsertedRecords' => true,
     ];
 
     /**
@@ -57,6 +58,10 @@ class Framework extends \Codeception\Lib\Framework
             $this->testCase->dropTables = $this->config['dropTables'];
         }
 
+        if (!isset($this->testCase->cleanUpInsertedRecords)) {
+            $this->testCase->cleanUpInsertedRecords = $this->config['cleanUpInsertedRecords'];
+        }
+
         EventManager::instance(new EventManager());
         $this->fixtureManager = new FixtureManager();
 
@@ -74,6 +79,11 @@ class Framework extends \Codeception\Lib\Framework
     public function _after(TestCase $test) // @codingStandardsIgnoreEnd
     {
         $this->resetApplication();
+
+        if ($this->testCase->cleanUpInsertedRecords) {
+            $this->cleanUpInsertedRecords();
+        }
+
         $this->fixtureManager->unload($this->testCase);
         if ($this->testCase->dropTables) {
             $this->fixtureManager->shutDown();

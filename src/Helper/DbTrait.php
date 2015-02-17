@@ -5,6 +5,36 @@ use Cake\ORM\TableRegistry;
 
 trait DbTrait
 {
+    protected $insertedRecords = [];
+
+    /**
+     * Cleans up inserted records.
+     *
+     * @param string $model Model alias.
+     * @param array $conditions Conditions passed to `Cake\ORM\Table::deleteAll()`.
+     * @return void
+     */
+    public function cleanUpInsertedRecords($model = null, array $conditions = [])
+    {
+        $records = $this->insertedRecords;
+
+        if (empty($records)) {
+            return;
+        }
+
+        if (!empty($model) && !empty($records[$model])) {
+            if (!empty($data)) {
+                TableRegistry::get($model)->deleteAll($data);
+                return;
+            }
+
+            $records = [$model => $records[$model]];
+        }
+
+        foreach ($records as $model => $data) {
+            TableRegistry::get($model)->deleteAll($data);
+        }
+    }
 
     /**
      * Inserts record into the database.
@@ -25,6 +55,11 @@ trait DbTrait
             $this->fail('Could not insert record into table ' . $model);
         }
 
+        if (empty($this->insertedRecords[$model])) {
+            $this->insertedRecords[$model] = [];
+        }
+
+        $this->insertedRecords[$model][] = $data->toArray();
         return $data->{$table->primaryKey()};
     }
 
