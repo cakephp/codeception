@@ -5,6 +5,59 @@ use Cake\ORM\TableRegistry;
 
 trait ORMTrait
 {
+
+    public function seeAssociation($table, $name, $type = null, array $options = [])
+    {
+        if (!($table instanceof Table)) {
+            $table = $this->grabTable($table);
+        }
+
+        $association = $table->association($name);
+
+        if (empty($options) && empty($type)) {
+            $this->assertNotEmpty($association);
+            return;
+        }
+
+        if (!empty($type)) {
+            $this->assertEquals($type, $association->type());
+        }
+
+        foreach ($options as $key => $value) {
+            $this->assertEquals($association->{$key}(), $value);
+        }
+    }
+
+    public function dontSeeAssociation($table, $name, $type = null, array $options = [])
+    {
+        if (!($table instanceof Table)) {
+            $table = $this->grabTable($table);
+        }
+
+        $association = $table->association($name);
+
+        if (empty($options) && empty($type)) {
+            $this->assertEmpty($association);
+            return;
+        }
+
+        if (empty($options) && !empty($type)) {
+            $this->assertNotEquals($type, $association->type());
+            return;
+        }
+
+        foreach ($options as $key => $value) {
+            if ($association->{$key}() !== $value) {
+                $this->assertTrue(true);
+                return;
+            }
+
+        }
+
+        $this->assertNotEquals($type, $association->type());
+        $this->assertNotEquals($options, $options);
+    }
+
     public function seeValidationErrors($entity, $data, array $expectedErrors = [])
     {
         $errors = $this->tryValidating($entity, $data);
