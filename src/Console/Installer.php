@@ -11,7 +11,7 @@ class Installer
      *
      * @param \Composer\Script\Event $event Event.
      */
-    public static function postAutoloadDump(Event $event)
+    public static function customizeCodeceptionBinary(Event $event)
     {
         $binDir = dirname(dirname(dirname(dirname(__DIR__)))) . DIRECTORY_SEPARATOR;
         $binDir = $binDir . 'codeception' . DIRECTORY_SEPARATOR . 'codeception';
