@@ -146,7 +146,7 @@ $I->grabRecord('users', ['id' => '1']);
 This checks that the requested record does exist in the database.
 
 ```php
-$I->haveRecord('users', ['username' => 'jadb']);
+$I->seeRecord('users', ['username' => 'jadb']);
 ```
 
 #### Assert record does not exist with `dontSeeRecord($model, $conditions = [])`
