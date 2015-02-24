@@ -24,7 +24,8 @@ class Installer
             'Build',
             'Bootstrap',
             'GenerateCest',
-            'GenerateGroup'
+            'GenerateGroup',
+            'GenerateSuite',
         ];
 
         foreach ($needles as $needle) {
