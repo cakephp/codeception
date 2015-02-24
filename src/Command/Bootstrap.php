@@ -2,6 +2,7 @@
 namespace Cake\Codeception\Command;
 
 use Cake\Codeception\Lib\Generator\Helper;
+use Cake\Shell\ServerShell;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -141,7 +142,7 @@ class Bootstrap extends \Codeception\Command\Bootstrap
                 ],
                 'config'  => [
                     'PhpBrowser' => [
-                        'url' => 'http://localhost/myapp/'
+                        'url' => 'http://' . ServerShell::DEFAULT_HOST . ':' . ServerShell::DEFAULT_PORT
                     ],
                 ]
             ],
