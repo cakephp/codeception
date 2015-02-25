@@ -100,6 +100,7 @@ class Connector extends Client
             ));
         }
 
+        $response->sendHeaders();
         return new BrowserKitResponse(
             $response->body(),
             $response->statusCode(),
