@@ -8,7 +8,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
 
-
 /**
  * Create new test suite. Requires suite name and actor name
  *
@@ -28,7 +27,7 @@ class GenerateSuite extends \Codeception\Command\GenerateSuite
         $suite = ucfirst($input->getArgument('suite'));
         $actor = $input->getArgument('actor');
 
-        if ($this->containsInvalidCharacters ($suite)) {
+        if ($this->containsInvalidCharacters($suite)) {
             $output->writeln("<error>Suite name '$suite' contains invalid characters. ([A-Za-z0-9_]).</error>");
             return;
         }
@@ -47,7 +46,8 @@ class GenerateSuite extends \Codeception\Command\GenerateSuite
         $this->buildPath($dir . $suite . DIRECTORY_SEPARATOR, 'bootstrap.php');
 
         // generate bootstrap
-        $this->save($dir . $suite . DIRECTORY_SEPARATOR . 'bootstrap.php',
+        $this->save(
+            $dir . $suite . DIRECTORY_SEPARATOR . 'bootstrap.php',
             "<?php\n// Here you can initialize variables that will be available to your tests\n",
             true
         );
@@ -80,8 +80,8 @@ class GenerateSuite extends \Codeception\Command\GenerateSuite
         $output->writeln("<info>Suite $suite generated</info>");
     }
 
-    private function containsInvalidCharacters ($suite)
+    private function containsInvalidCharacters($suite)
     {
-        return preg_match ('#[^A-Za-z0-9_]#', $suite) ? true : false;
+        return preg_match('#[^A-Za-z0-9_]#', $suite) ? true : false;
     }
 }
