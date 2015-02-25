@@ -126,11 +126,33 @@ class Connector extends Client
 
         try {
             $dispatcher->dispatch($request, $response);
-        } catch (\Exception $e) {
+        } catch (\PHPUnit_Exception $e) {
             throw $e;
+        } catch (\Exception $e) {
+            $response = $this->_handleError($e);
         }
 
         return $response;
+    }
+
+    /**
+     * Attempts to render an error response for a given exception.
+     *
+     * This method will attempt to use the configured exception renderer.
+     * If that class does not exist, the built-in renderer will be used.
+     *
+     * @param \Exception $exception Exception to handle.
+     * @return void
+     * @throws \Exception
+     */
+    protected function _handleError($exception)
+    {
+        $class = Configure::read('Error.exceptionRenderer');
+        if (empty($class) || !class_exists($class)) {
+            $class = 'Cake\Error\ExceptionRenderer';
+        }
+        $instance = new $class($exception);
+        return $instance->render();
     }
 
     /**
