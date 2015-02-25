@@ -129,7 +129,7 @@ class Connector extends Client
         } catch (\PHPUnit_Exception $e) {
             throw $e;
         } catch (\Exception $e) {
-            $response = $this->_handleError($e);
+            $response = $this->handleError($e);
         }
 
         return $response;
@@ -145,7 +145,7 @@ class Connector extends Client
      * @return void
      * @throws \Exception
      */
-    protected function _handleError($exception)
+    protected function handleError($exception)
     {
         $class = Configure::read('Error.exceptionRenderer');
         if (empty($class) || !class_exists($class)) {
