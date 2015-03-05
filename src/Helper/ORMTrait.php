@@ -1,6 +1,7 @@
 <?php
 namespace Cake\Codeception\Helper;
 
+use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
 
 trait ORMTrait
