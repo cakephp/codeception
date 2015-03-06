@@ -4,16 +4,23 @@ CakePHP 3 Codeception Module
 [![Build Status](https://api.travis-ci.org/cakephp/codeception.png)](https://travis-ci.org/cakephp/codeception)
 [![License](https://poser.pugx.org/cakephp/codeception/license.svg)](https://packagist.org/packages/cakephp/codeception)
 
-***What?*** A [codeception](http://codeception.com) module to test your CakePHP 3 powered application.
+A [codeception](http://codeception.com) module to test your CakePHP 3 powered application. Using Codeception with CakePHP opens up a whole new set of testing capabilities.
 
-***Why?*** Using Codeception with CakePHP opens up a whole new set of testing capabilities for your app letting you do
+#####Front-end testing
+_(i.e. browser-based workflow tests)_
 
-- **front-end testing** _(i.e. browser-based workflow tests)_
-  - [x] **[[Functional Tests]](http://codeception.com/docs/05-FunctionalTests)**  - does our Cake App run the way we expect it to
-  - [x] **[[Acceptance Tests]](http://codeception.com/docs/04-AcceptanceTests)**  - does our Cake App do what the customer/user expects it to
-- **back-end testing** _(i.e. direct app function calls)_
-   - [x] **[[API Tests]](http://codeception.com/docs/10-WebServices)** - does my Cake App's API work 
-   - [ ] **[[Unit Tests]](http://codeception.com/docs/06-UnitTests)** - do our App's internal functions do what they should
+  - [[Functional Tests]](http://codeception.com/docs/05-FunctionalTests)
+    - does the App run the way we expect
+  - [[Acceptance Tests]](http://codeception.com/docs/04-AcceptanceTests)
+    - does the App do what the customer/user expects
+
+#####Back-end testing
+_(i.e. direct, internal method tests)_
+
+- [[API Tests]](http://codeception.com/docs/10-WebServices)
+  - does the App's API work
+- [[Unit Tests]](http://codeception.com/docs/06-UnitTests)
+  - do the App's internal functions do what we expect
 
 Usage
 -----
