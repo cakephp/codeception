@@ -59,7 +59,7 @@ trait DbTrait
             $this->insertedRecords[$model] = [];
         }
 
-        $this->insertedRecords[$model][] = $data->toArray();
+        $this->insertedRecords[$model][$table->primaryKey()][] = $data->{$table->primaryKey()};
         return $data->{$table->primaryKey()};
     }
 
