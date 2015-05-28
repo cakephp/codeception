@@ -11,10 +11,9 @@ trait DbTrait
      * Cleans up inserted records.
      *
      * @param string $model Model alias.
-     * @param array $conditions Conditions passed to `Cake\ORM\Table::deleteAll()`.
      * @return void
      */
-    public function cleanUpInsertedRecords($model = null, array $conditions = [])
+    public function cleanUpInsertedRecords($model = null)
     {
         $records = $this->insertedRecords;
 
@@ -23,12 +22,8 @@ trait DbTrait
         }
 
         if (!empty($model) && !empty($records[$model])) {
-            if (!empty($data)) {
-                TableRegistry::get($model)->deleteAll($data);
-                return;
-            }
-
-            $records = [$model => $records[$model]];
+            TableRegistry::get($model)->deleteAll($records[$model]);
+            return;
         }
 
         foreach ($records as $model => $data) {
