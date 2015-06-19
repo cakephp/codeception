@@ -25,22 +25,7 @@ _(i.e. direct, internal method tests)_
 Usage
 -----
 
-Edit your application's [`src/Console/Installer.php`][appinstaller] file to include the installer script in
-the `postInstall` method:
-
-[appinstaller]:https://github.com/cakephp/app/blob/master/src/Console/Installer.php#L34
-
-```php
-    public static function postInstall(Event $event)
-    {
-        // ...
-        if (class_exists('\Cake\Codeception\Console\Installer')) {
-            \Cake\Codeception\Console\Installer::customizeCodeceptionBinary($event);
-        }
-    }
-```
-
-Now, from the command-line:
+From the command-line:
 
 ```
 composer require --dev cakephp/codeception:dev-master
