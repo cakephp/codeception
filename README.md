@@ -25,11 +25,20 @@ _(i.e. direct, internal method tests)_
 Usage
 -----
 
-From the command-line:
+From a CakePHP application, run the following from the command-line:
 
 ```
-composer require --dev cakephp/codeception:dev-master
-composer install
+composer require --dev cakephp/codeception:dev-master && composer run-script post-install-cmd
+```
+
+If you are developing a plugin, add the post-install script to your `composer.json` first:
+
+```json
+{
+    "scripts": {
+        "post-install-cmd": "Cake\\Codeception\\Console\\Installer::customizeCodeceptionBinary"
+    }
+}
 ```
 
 Once installed, you can now run `bootstrap` which will create all the codeception required files
