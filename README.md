@@ -27,8 +27,8 @@ Usage
 
 From a CakePHP application, run the following from the command-line:
 
-```
-composer require --dev cakephp/codeception:dev-master && composer run-script post-install-cmd
+```console
+$ composer require --dev cakephp/codeception:dev-master && composer run-script post-install-cmd
 ```
 
 If you are developing a plugin, add the post-install script to your `composer.json` first:
@@ -44,8 +44,8 @@ If you are developing a plugin, add the post-install script to your `composer.js
 Once installed, you can now run `bootstrap` which will create all the codeception required files
 in your application:
 
-```
-vendor/bin/codecept bootstrap
+```console
+$ vendor/bin/codecept bootstrap
 ```
 
 This creates the following files/folders in your `app` directory:
