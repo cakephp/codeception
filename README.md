@@ -25,48 +25,57 @@ _(i.e. direct, internal method tests)_
 Usage
 -----
 
-From the command-line:
+From a CakePHP application, run the following from the command-line:
 
+```console
+$ composer require --dev cakephp/codeception:dev-master && composer run-script post-install-cmd
 ```
-composer require --dev cakephp/codeception:dev-master
-composer install
+
+If you are developing a plugin, add the post-install script to your `composer.json` first:
+
+```json
+{
+    "scripts": {
+        "post-install-cmd": "Cake\\Codeception\\Console\\Installer::customizeCodeceptionBinary"
+    }
+}
 ```
 
 Once installed, you can now run `bootstrap` which will create all the codeception required files
 in your application:
 
-```
-vendor/bin/codecept bootstrap
+```console
+$ vendor/bin/codecept bootstrap
 ```
 
 This creates the following files/folders in your `app` directory:
 
 ```
-|-codeception.yml
-|-src/
-|---TestSuite/
-|-----Codeception/
-|-------AcceptanceHelper.php
-|-------FunctionalHelper.php
-|-------UnitHelper.php
-|-tests/
-|---Acceptance.suite.yml
-|---Functional.suite.yml
-|---Unit.suite.yml
-|---Acceptance/
-|-----.gitignore
-|-----bootstrap.php
-|-----AcceptanceTester.php
-|---Fixture/
-|-----dump.sql
-|---Functional/
-|-----.gitignore
-|-----bootstrap.php
-|-----FunctionalTester.php
-|---Unit/
-|-----.gitignore
-|-----bootstrap.php
-|-----UnitTester.php
+├── codeception.yml
+├── src
+│   └── TestSuite
+│       └── Codeception
+│           ├── AcceptanceHelper.php
+│           ├── FunctionalHelper.php
+│           └── UnitHelper.php
+└── tests
+    ├── Acceptance.suite.yml
+    ├── Functional.suite.yml
+    ├── Unit.suite.yml
+    ├── Acceptance
+    │   ├── .gitignore
+    │   ├── bootstrap.php
+    │   └── AcceptanceTester.php
+    ├── Fixture
+    │   └── dump.sql
+    ├── Functional
+    │   ├── .gitignore
+    │   ├── bootstrap.php
+    │   └── FunctionalTester.php
+    └── Unit
+        ├── .gitignore
+        ├── bootstrap.php
+        └── UnitTester.php
 ```
 
 As you might have noticed, the CakePHP implementation differs in a couple things:
