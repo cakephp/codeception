@@ -51,31 +51,31 @@ vendor/bin/codecept bootstrap
 This creates the following files/folders in your `app` directory:
 
 ```
-|-codeception.yml
-|-src/
-|---TestSuite/
-|-----Codeception/
-|-------AcceptanceHelper.php
-|-------FunctionalHelper.php
-|-------UnitHelper.php
-|-tests/
-|---Acceptance.suite.yml
-|---Functional.suite.yml
-|---Unit.suite.yml
-|---Acceptance/
-|-----.gitignore
-|-----bootstrap.php
-|-----AcceptanceTester.php
-|---Fixture/
-|-----dump.sql
-|---Functional/
-|-----.gitignore
-|-----bootstrap.php
-|-----FunctionalTester.php
-|---Unit/
-|-----.gitignore
-|-----bootstrap.php
-|-----UnitTester.php
+├── codeception.yml
+├── src
+│   └── TestSuite
+│       └── Codeception
+│           ├── AcceptanceHelper.php
+│           ├── FunctionalHelper.php
+│           └── UnitHelper.php
+└── tests
+    ├── Acceptance.suite.yml
+    ├── Functional.suite.yml
+    ├── Unit.suite.yml
+    ├── Acceptance
+    │   ├── .gitignore
+    │   ├── bootstrap.php
+    │   └── AcceptanceTester.php
+    ├── Fixture
+    │   └── dump.sql
+    ├── Functional
+    │   ├── .gitignore
+    │   ├── bootstrap.php
+    │   └── FunctionalTester.php
+    └── Unit
+        ├── .gitignore
+        ├── bootstrap.php
+        └── UnitTester.php
 ```
 
 As you might have noticed, the CakePHP implementation differs in a couple things:
