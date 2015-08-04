@@ -8,7 +8,7 @@ php:
   - 5.6
 
 before_install:
-  - test -e .git/shallow && rm .git/shallow
+  - if [ -f .git/shallow ]; then rm .git/shallow; fi
   - composer install
   - composer require --prefer-source --dev squizlabs/php_codesniffer:~2.0
   - composer create-project --prefer-source -s dev --no-interaction cakephp/app tests/test_app
