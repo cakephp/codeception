@@ -4,6 +4,12 @@
     "homepage": "http://cakephp.org",
     "type": "project",
     "license": "MIT",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/cakephp/codeception"
+        }
+    ],
     "require": {
         "php": ">=5.4.16",
         "cakephp/cakephp": "~3.0",
