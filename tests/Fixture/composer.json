@@ -7,7 +7,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/cakephp/codeception"
+            "url": "../../"
         }
     ],
     "require": {
