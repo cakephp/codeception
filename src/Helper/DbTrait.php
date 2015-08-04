@@ -54,7 +54,7 @@ trait DbTrait
             $this->insertedRecords[$model] = [];
         }
 
-        $this->insertedRecords[$model][$table->primaryKey()][] = $data->{$table->primaryKey()};
+        $this->insertedRecords[$model][$table->primaryKey() . ' IN'][] = $data->{$table->primaryKey()};
         return $data->{$table->primaryKey()};
     }
 
