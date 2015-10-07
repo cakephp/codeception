@@ -202,8 +202,27 @@ class Bootstrap extends \Codeception\Command\Bootstrap
         );
         file_put_contents(
             "tests/$suite/bootstrap.php",
-            "<?php\n// Here you can initialize variables that will be available to your tests\n"
-        );
+            <<<'EOF'
+<?php
+// Here you can initialize variables that will be available to your tests, e.g. the app's bootstrap.php
+$findRoot = function ($root) {
+    do {
+        $lastRoot = $root;
+        $root = dirname($root);
+        if (is_dir($root . '/vendor/cakephp/cakephp')) {
+            return $root;
+        }
+    } while ($root !== $lastRoot);
+
+    throw new Exception("Cannot find the root of the application, unable to run tests");
+};
+$root = $findRoot(__FILE__);
+unset($findRoot);
+
+chdir($root);
+require $root . '/config/bootstrap.php';
+EOF
+    );
         file_put_contents(
             $this->helperDir . DIRECTORY_SEPARATOR . $actor . 'Helper.php',
             (new Helper($actor, $this->namespace))->produce()
