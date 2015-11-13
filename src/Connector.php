@@ -61,7 +61,7 @@ class Connector extends Client
     {
         $url = preg_replace('/^https?:\/\/[a-z0-9\-\.]+/', '', $request->getUri());
 
-        $_ENV = $environment = ['REQUEST_METHOD' => $request->getMethod()];
+        $_ENV = $environment = $request->getServer() + ['REQUEST_METHOD' => $request->getMethod()];
         $params = Router::parse($url);
 
         $props = [
