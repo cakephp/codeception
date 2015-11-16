@@ -61,12 +61,10 @@ class Connector extends Client
     {
         $url = preg_replace('/^https?:\/\/[a-z0-9\-\.]+/', '', $request->getUri());
 
-        $_ENV = $environment = ['REQUEST_METHOD' => $request->getMethod()];
-        $params = Router::parse($url);
+        $_ENV = $environment = ['REQUEST_METHOD' => $request->getMethod()] + $request->getServer();
 
         $props = [
             'url' => $url,
-            'params' => $params,
             'post' => (array)$request->getParameters(),
             'files' => (array)$request->getFiles(),
             'cookies' => (array)$request->getCookies(),
@@ -75,6 +73,11 @@ class Connector extends Client
         ];
 
         $this->cake['request'] = new Request($props);
+
+        // set params
+        Router::setRequestInfo($this->cake['request']);
+        $this->cake['request']->params = Router::parse($url);
+
         return $this->cake['request'];
     }
 
