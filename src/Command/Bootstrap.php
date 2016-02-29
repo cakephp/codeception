@@ -222,7 +222,7 @@ unset($findRoot);
 chdir($root);
 require $root . '/config/bootstrap.php';
 EOF
-    );
+        );
         file_put_contents(
             $this->helperDir . DIRECTORY_SEPARATOR . $actor . 'Helper.php',
             (new Helper($actor, $this->namespace))->produce()
