@@ -239,6 +239,7 @@ chdir($root);
 require $root . '/config/bootstrap.php';
 EOF
         );
+        @mkdir($this->helperDir);
         file_put_contents(
             $this->helperDir . DIRECTORY_SEPARATOR . $actor . 'Helper.php',
             (new Helper($actor, $this->namespace))->produce()
