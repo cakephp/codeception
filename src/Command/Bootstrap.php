@@ -3,6 +3,7 @@ namespace Cake\Codeception\Command;
 
 use Cake\Codeception\Lib\Generator\Helper;
 use Cake\Shell\ServerShell;
+use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -50,9 +51,24 @@ class Bootstrap extends \Codeception\Command\Bootstrap
             "<fg=white;bg=magenta>Initializing Codeception in " . $realpath . "</fg=white;bg=magenta>\n"
         );
 
-        if ($input->getOption('compat')) {
+        $compatibilitySetup = false;
+        try {
+            $compatibilitySetup = $input->getOption('compat');
+        } catch (InvalidArgumentException $e) {
+            $compatibilitySetup = false;
+        }
+
+
+        $customize = false;
+        try {
+            $customize = $input->getOption('customize');
+        } catch (InvalidArgumentException $e) {
+            $customize = false;
+        }
+
+        if ($compatibilitySetup) {
             $this->compatibilitySetup($output);
-        } elseif ($input->getOption('customize')) {
+        } elseif ($customize) {
             $this->customize($output);
         } else {
             $this->setup($output);
