@@ -8,6 +8,7 @@ php:
   - 7.0
 
 before_install:
+  - source tests/travis-github-pr-integration.sh
   - if [ -f .git/shallow ]; then rm .git/shallow; fi
   - composer install
   - composer require --prefer-source --dev squizlabs/php_codesniffer:~2.0
