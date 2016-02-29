@@ -14,7 +14,7 @@ before_install:
   - composer create-project --prefer-source -s dev --no-interaction cakephp/app tests/test_app
   - cp tests/Fixture/composer.json tests/test_app/.
   - cd tests/test_app
-  - composer require --prefer-source --dev cakephp/codeception:dev-$TRAVIS_BRANCH#$TRAVIS_COMMIT
+  # - composer require --prefer-source --dev cakephp/codeception:dev-$TRAVIS_BRANCH#$TRAVIS_COMMIT
   - rm composer.lock
   - composer install --prefer-source
   - vendor/bin/codecept bootstrap
