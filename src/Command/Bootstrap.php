@@ -220,7 +220,7 @@ $root = $findRoot(__FILE__);
 unset($findRoot);
 
 chdir($root);
-require $root . '/config/bootstrap.php';
+require_once $root . '/config/bootstrap.php';
 EOF
     );
         file_put_contents(
