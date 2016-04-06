@@ -45,9 +45,8 @@ class Build extends \Codeception\Command\Build
             $file = $settings['path'].$this->getClassName($settings['class_name']).'.php';
             $this->save($file, $contents, true);
             $this->output->writeln(sprintf(
-                '%s.php generated succesfully, %s methods added',
-                $settings['class_name'],
-                $gen->getNumMethods()
+                '%s.php generated succesfully',
+                $settings['class_name']
             ));
         }
     }
