@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "codeception/codeception": "2.0.*"
+        "codeception/codeception": "2.0.16"
     },
     "autoload": {
         "psr-4": {
