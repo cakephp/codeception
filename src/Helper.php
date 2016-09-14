@@ -3,6 +3,7 @@ namespace Cake\Codeception;
 
 use Cake\Codeception\Helper\AuthTrait;
 use Cake\Codeception\Helper\DispatcherTrait;
+use Cake\Codeception\Helper\MailerTrait;
 use Cake\Codeception\Helper\RouterTrait;
 use Cake\Codeception\Helper\SessionTrait;
 use Cake\Codeception\Helper\ViewTrait;
@@ -14,6 +15,7 @@ class Helper extends Framework
 
     use AuthTrait;
     use DispatcherTrait;
+    use MailerTrait;
     use RouterTrait;
     use SessionTrait;
     use ViewTrait;
