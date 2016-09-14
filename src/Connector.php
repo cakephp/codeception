@@ -57,7 +57,7 @@ class Connector extends Client
      * @param \Symfony\Component\BrowserKit\Request $request BrowserKit request.
      * @return \Cake\Network\Request Cake request.
      */
-    protected function filterRequest($request)
+    protected function filterRequest(\Symfony\Component\BrowserKit\Request $request)
     {
         $url = preg_replace('/^https?:\/\/[a-z0-9\-\.]+/', '', $request->getUri());
 
