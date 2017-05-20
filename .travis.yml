@@ -3,30 +3,33 @@ language: php
 sudo: false
 
 php:
-  - 5.4
-  - 5.5
   - 5.6
+  - 7.0
+  - 7.1
+
+env:
+  matrix:
+    - CAKE_VERSION=3.3.*
+    - CAKE_VERSION=3.4.*
 
 before_install:
   - if [ -f .git/shallow ]; then rm .git/shallow; fi
   - composer install
-  - composer require --prefer-source --dev squizlabs/php_codesniffer:~2.0
-  - composer create-project --prefer-source -s dev --no-interaction cakephp/app tests/test_app
-  - cp tests/Fixture/composer.json tests/test_app/.
+  - composer require --dev squizlabs/php_codesniffer:~2.0
+  - composer create-project --no-interaction cakephp/app:$CAKE_VERSION tests/test_app
   - cd tests/test_app
+  - composer config repositories.local vcs ../../
   - composer require --prefer-source --dev cakephp/codeception:dev-$TRAVIS_BRANCH#$TRAVIS_COMMIT
-  - rm composer.lock
-  - composer install --prefer-source
+  - composer run-script --no-interaction post-install-cmd
   - vendor/bin/codecept bootstrap
   - vendor/bin/codecept generate:cest Functional Foo
   - vendor/bin/codecept generate:cept Functional Foo
   - cd ../sample_app
   - cp ../test_app/composer.json .
-  - cp ../Fixture/Installer.php src/Console/.
-  - composer install --prefer-source
-  - vendor/bin/codecept build
+  - cp ../test_app/src/Console/Installer.php src/Console/.
+  - composer install --no-interaction
 
 script:
-  - vendor/bin/codecept run && cd ../..
-  - vendor/bin/phpcs --standard=PSR2 --extensions=php --ignore=tests/*_app src/ tests/
-  - phpunit
+  - cd $TRAVIS_BUILD_DIR && vendor/bin/phpcs --standard=PSR2 --extensions=php --ignore=tests/*_app src/ tests/
+  - cd $TRAVIS_BUILD_DIR/tests/sample_app && vendor/bin/codecept build && vendor/bin/codecept run
+  - cd $TRAVIS_BUILD_DIR && vendor/bin/phpunit
