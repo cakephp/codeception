@@ -10,8 +10,9 @@ use Symfony\Component\Yaml\Yaml;
 
 class Bootstrap extends \Codeception\Command\Bootstrap
 {
+    protected $namespace = 'App\\';
     protected $actorSuffix = 'Tester';
-    protected $helperDir = 'src/TestSuite/Codeception';
+    protected $supportDir = 'src/TestSuite/Codeception';
     protected $logDir = 'tmp/tests';
     protected $dataDir = 'tests/Fixture';
 
@@ -24,7 +25,9 @@ class Bootstrap extends \Codeception\Command\Bootstrap
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->namespace = rtrim($input->getOption('namespace'), '\\');
+        if ($input->getOption('namespace')) {
+            $this->namespace = trim($input->getOption('namespace'), '\\') . '\\';
+        }
 
         if ($input->getOption('actor')) {
             $this->actorSuffix = $input->getOption('actor');
@@ -50,17 +53,36 @@ class Bootstrap extends \Codeception\Command\Bootstrap
             "<fg=white;bg=magenta>Initializing Codeception in " . $realpath . "</fg=white;bg=magenta>\n"
         );
 
-        if ($input->getOption('compat')) {
-            $this->compatibilitySetup($output);
-        } elseif ($input->getOption('customize')) {
-            $this->customize($output);
-        } else {
-            $this->setup($output);
+        $this->createGlobalConfig();
+        $output->writeln("File codeception.yml created       <- global configuration");
+
+        $this->createDirs();
+
+        if (!$input->getOption('empty')) {
+            $this->createUnitSuite();
+            $output->writeln("tests/unit created                 <- unit tests");
+            $output->writeln("tests/unit.suite.yml written       <- unit tests suite configuration");
+            $this->createFunctionalSuite();
+            $output->writeln("tests/functional created           <- functional tests");
+            $output->writeln("tests/functional.suite.yml written <- functional tests suite configuration");
+            $this->createAcceptanceSuite();
+            $output->writeln("tests/acceptance created           <- acceptance tests");
+            $output->writeln("tests/acceptance.suite.yml written <- acceptance tests suite configuration");
         }
+
+        $output->writeln(" --- ");
+        $this->ignoreFolderContent('tmp/tests');
+        if (file_exists('.gitignore')) {
+            file_put_contents('.gitignore', file_get_contents('.gitignore') . "\ntmp/tests/*");
+            $output->writeln("tmp/tests was added to .gitignore");
+        }
+
+        file_put_contents('tests/bootstrap.php', "<?php\n// This is global bootstrap for autoloading\n");
+        $output->writeln("tests/bootstrap.php written <- global bootstrap file");
 
         $output->writeln("<info>Building initial {$this->actorSuffix} classes</info>");
         $this->getApplication()->find('build')->run(
-            new ArrayInput(array('command' => 'build')),
+            new ArrayInput(['command' => 'build']),
             $output
         );
 
@@ -80,18 +102,23 @@ class Bootstrap extends \Codeception\Command\Bootstrap
                 'tests'   => 'tests',
                 'log'     => $this->logDir,
                 'data'    => $this->dataDir,
-                'helpers' => $this->helperDir
+                'support' => $this->supportDir,
+                'envs'    => $this->envsDir,
             ],
             'settings' => [
                 'bootstrap'    => 'bootstrap.php',
                 'colors'       => (strtoupper(substr(PHP_OS, 0, 3)) != 'WIN'),
                 'memory_limit' => '1024M'
+            ],
+            'extensions' => [
+                'enabled' => ['Codeception\Extension\RunFailed']
             ]
         ];
 
-        $str = Yaml::dump($basicConfig, 3);
+        $str = Yaml::dump($basicConfig, 4);
         if ($this->namespace) {
-            $str = "namespace: {$this->namespace} \n" . $str;
+            $namespace = rtrim($this->namespace, '\\');
+            $str = "namespace: $namespace\n" . $str;
         }
         file_put_contents('codeception.yml', $str);
     }
@@ -103,25 +130,22 @@ class Bootstrap extends \Codeception\Command\Bootstrap
      */
     protected function createFunctionalSuite($actor = 'Functional')
     {
-        $suiteConfig = [
-            'class_name' => $actor . $this->actorSuffix,
-            'namespace' => 'App\Test\Functional',
-            'modules' => [
-                'enabled' => [
-                    'Cake\Codeception\Helper',
-                    'App\TestSuite\Codeception\\' . $actor . 'Helper'
-                ]
-            ],
-        ];
+        $suiteConfig = <<<EOF
+# CakePHP Codeception Functional Test Suite Configuration
+#
+# Suite for functional (integration) tests
+# Emulate web requests and make application process them
+# Include one of framework modules (Symfony2, Yii2, Laravel5) to use it
 
-        $docblock = [
-            '#',
-            '# CakePHP Codeception Functional Test Suite Configuration' . "\n#",
-            '# Allows you to emulate web requests and make the application ',
-            '# process them.' . "\n#\n",
-            Yaml::dump($suiteConfig, 2)
-        ];
-        $this->createSuite('Functional', $actor, implode("\n", $docblock));
+class_name: $actor{$this->actorSuffix}
+namespace: {$this->namespace}Test\\Functional
+modules:
+    enabled:
+        # add framework module here
+        - \\Cake\\Codeception\\Helper
+        - \\{$this->namespace}TestSuite\\Codeception\\{$actor}Helper
+EOF;
+        $this->createSuite('Functional', $actor, $suiteConfig);
     }
 
     /**
@@ -131,32 +155,23 @@ class Bootstrap extends \Codeception\Command\Bootstrap
      */
     protected function createAcceptanceSuite($actor = 'Acceptance')
     {
-        $suiteConfig = [
-            'class_name' => $actor . $this->actorSuffix,
-            'namespace' => 'App\Test\Acceptance',
-            'modules' => [
-                'enabled' => [
-                    'Cake\Codeception\Helper',
-                    'PhpBrowser',
-                    'App\TestSuite\Codeception\\' . $actor . 'Helper'
-                ],
-                'config'  => [
-                    'PhpBrowser' => [
-                        'url' => 'http://' . ServerShell::DEFAULT_HOST . ':' . ServerShell::DEFAULT_PORT
-                    ],
-                ]
-            ],
-        ];
+        $url = 'http://' . ServerShell::DEFAULT_HOST . ':' . ServerShell::DEFAULT_PORT;
+        $suiteConfig = <<<EOF
+# CakePHP Codeception Acceptance Test Suite Configuration
+#
+# Suite for acceptance tests.
+# Perform tests in browser using the WebDriver or PhpBrowser.
+# If you need both WebDriver and PHPBrowser tests - create a separate suite.
 
-        $docblock = [
-            '#',
-            '# CakePHP Codeception Acceptance Test Suite Configuration' . "\n#",
-            '# Allows you to perform web requests in the browser using the PhpBrowser',
-            '# or WebDriver. If you need both the PhpBrowser and the',
-            '# WebDriver, create a separate suite.' . "\n#\n",
-            Yaml::dump($suiteConfig, 5)
-        ];
-        $this->createSuite('Acceptance', $actor, implode("\n", $docblock));
+class_name: $actor{$this->actorSuffix}
+namespace: {$this->namespace}Test\\Acceptance
+modules:
+    enabled:
+        - PhpBrowser:
+            url: {$url}
+        - \\{$this->namespace}TestSuite\\Codeception\\{$actor}Helper
+EOF;
+        $this->createSuite('Acceptance', $actor, $suiteConfig);
     }
 
     /**
@@ -166,24 +181,20 @@ class Bootstrap extends \Codeception\Command\Bootstrap
      */
     protected function createUnitSuite($actor = 'Unit')
     {
-        $suiteConfig = [
-            'class_name' => $actor . $this->actorSuffix,
-            'namespace' => 'App\Test\Unit',
-            'modules' => [
-                'enabled' => [
-                    'Cake\Codeception\Framework',
-                    'Asserts',
-                    'App\TestSuite\Codeception\\' . $actor . 'Helper'
-                ]
-            ],
-        ];
+        $suiteConfig = <<<EOF
+# CakePHP Codeception Unit Test Suite Configuration
+#
+# Suite for unit (internal) tests.
 
-        $docblock = [
-            '#',
-            '# CakePHP Codeception Unit Test Suite Configuration' . "\n#",
-            Yaml::dump($suiteConfig, 2)
-        ];
-        $this->createSuite('Unit', $actor, implode("\n", $docblock));
+class_name: $actor{$this->actorSuffix}
+namespace: {$this->namespace}Test\\Unit
+modules:
+    enabled:
+        - \\Cake\\Codeception\\Framework
+        - Asserts
+        - \\{$this->namespace}TestSuite\\Codeception\\{$actor}Helper
+EOF;
+        $this->createSuite('Unit', $actor, $suiteConfig);
     }
 
     /**
@@ -200,6 +211,7 @@ class Bootstrap extends \Codeception\Command\Bootstrap
             "tests/$suite/.gitignore",
             $actor . 'Tester.php'
         );
+        $this->ignoreFolderContent("tests/$suite/_generated");
         file_put_contents(
             "tests/$suite/bootstrap.php",
             <<<'EOF'
@@ -224,32 +236,9 @@ require_once $root . '/config/bootstrap.php';
 EOF
         );
         file_put_contents(
-            $this->helperDir . DIRECTORY_SEPARATOR . $actor . 'Helper.php',
+            $this->supportDir . DIRECTORY_SEPARATOR . $actor . 'Helper.php',
             (new Helper($actor, $this->namespace))->produce()
         );
         file_put_contents("tests/$suite.suite.yml", $config);
-    }
-
-    /**
-     * Creates the global configuration and all default suites.
-     *
-     * @param OutputInterface $output Output
-     * @return void
-     */
-    protected function setup(OutputInterface $output)
-    {
-        $this->createGlobalConfig();
-        $output->writeln("File codeception.yml created       <- global configuration");
-
-        $this->createDirs();
-        $this->createUnitSuite();
-        $output->writeln("tests/unit created                 <- unit tests");
-        $output->writeln("tests/unit.suite.yml written       <- unit tests suite configuration");
-        $this->createFunctionalSuite();
-        $output->writeln("tests/functional created           <- functional tests");
-        $output->writeln("tests/functional.suite.yml written <- functional tests suite configuration");
-        $this->createAcceptanceSuite();
-        $output->writeln("tests/acceptance created           <- acceptance tests");
-        $output->writeln("tests/acceptance.suite.yml written <- acceptance tests suite configuration");
     }
 }
