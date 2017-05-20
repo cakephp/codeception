@@ -10,7 +10,6 @@ class_name: AcceptanceTester
 namespace: App\Test\Acceptance
 modules:
     enabled:
-        - Cake\Codeception\Helper
         - PhpBrowser
         - App\TestSuite\Codeception\AcceptanceHelper
     config:
