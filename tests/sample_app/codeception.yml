@@ -1,10 +1,15 @@
-actor: Tester
+namespace: App\TestSuite\Codeception
 paths:
     tests: tests
-    log: tmp/tests
+    output: tmp/tests
     data: tests/Fixture
-    helpers: src/TestSuite/Codeception
+    support: src/TestSuite/Codeception
+    envs: tests/Envs
 settings:
     bootstrap: bootstrap.php
     colors: true
     memory_limit: 1024M
+actor_suffix: Tester
+extensions:
+    enabled:
+        - Codeception\Extension\RunFailed
