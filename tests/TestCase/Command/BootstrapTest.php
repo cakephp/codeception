@@ -56,6 +56,8 @@ class BootstrapTest extends TestCase
         $this->assertTrue(file_exists($configFilePath), 'File `acceptance.suite.yml` must be auto-created');
 
         $result = file_get_contents($configFilePath);
+        $this->assertContains('namespace: App\TestSuite\Codeception', $result, 'namespace must be enabled');
+        $this->assertContains('suite_namespace: App\Test\Acceptance', $result, 'suite_namespace must be enabled');
         $this->assertContains('\Cake\Codeception\Helper', $result, 'Cake helper module must be enabled');
         $this->assertContains('\App\TestSuite\Codeception\Helper\Acceptance', $result, 'Acceptance helper must be enabled');
     }
@@ -66,6 +68,8 @@ class BootstrapTest extends TestCase
         $this->assertTrue(file_exists($configFilePath), 'File `functional.suite.yml` must be auto-created');
 
         $result = file_get_contents($configFilePath);
+        $this->assertContains('namespace: App\TestSuite\Codeception', $result, 'namespace must be enabled');
+        $this->assertContains('suite_namespace: App\Test\Functional', $result, 'suite_namespace must be enabled');
         $this->assertContains('\Cake\Codeception\Helper', $result, 'Cake helper module must be enabled');
         $this->assertContains('\App\TestSuite\Codeception\Helper\Functional', $result, 'Functional helper must be enabled');
     }
@@ -76,6 +80,8 @@ class BootstrapTest extends TestCase
         $this->assertTrue(file_exists($configFilePath), 'File `unit.suite.yml` must be auto-created');
 
         $result = file_get_contents($configFilePath);
+        $this->assertContains('namespace: App\TestSuite\Codeception', $result, 'namespace must be enabled');
+        $this->assertContains('suite_namespace: App\Test\Unit', $result, 'suite_namespace must be enabled');
         $this->assertNotContains('\Cake\Codeception\Helper', $result, 'Cake helper module must not be enabled');
         $this->assertContains('\Cake\Codeception\Framework', $result, 'Cake framework module must be enabled');
         $this->assertContains('\App\TestSuite\Codeception\Helper\Unit', $result, 'Unit helper must be enabled');
