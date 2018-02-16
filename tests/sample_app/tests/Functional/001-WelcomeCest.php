@@ -1,7 +1,7 @@
 <?php
 namespace App\Test\Functional;
 
-use App\Test\Functional\FunctionalTester;
+use App\TestSuite\Codeception\FunctionalTester;
 
 class WelcomeCest
 {
