@@ -12,9 +12,9 @@ class GenerateCest extends \Codeception\Command\GenerateCest
         $suite = $input->getArgument('suite');
         $class = $input->getArgument('class');
 
-        $config = $this->getSuiteConfig($suite, $input->getOption('config'));
-        $className = $this->getClassName($class);
-        $path = $this->buildPath($config['path'], $class);
+        $config = $this->getSuiteConfig($suite);
+        $className = $this->getShortClassName($class);
+        $path = $this->createDirectoryFor($config['path'], $class);
 
         $filename = $this->completeSuffix($className, 'Cest');
         $filename = $path . $filename;
@@ -24,7 +24,7 @@ class GenerateCest extends \Codeception\Command\GenerateCest
             return;
         }
         $gen = new CestGenerator($class, $config);
-        $res = $this->save($filename, $gen->produce());
+        $res = $this->createFile($filename, $gen->produce());
         if (!$res) {
             $output->writeln("<error>Test $filename already exists</error>");
             return;
