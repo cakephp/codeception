@@ -115,7 +115,6 @@ modules:
     enabled:
         - PhpBrowser:
             url: http://localhost/myapp
-        - \Cake\Codeception\Helper
         - \\{$this->namespace}Helper\Acceptance
 EOF;
         $this->createSuite('Acceptance', $actor, $suiteConfig);

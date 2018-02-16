@@ -11,5 +11,4 @@ modules:
     enabled:
         - PhpBrowser:
             url: http://localhost/myapp
-        - \Cake\Codeception\Helper
         - \App\TestSuite\Codeception\Helper\Acceptance

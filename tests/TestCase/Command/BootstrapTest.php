@@ -58,7 +58,7 @@ class BootstrapTest extends TestCase
         $result = file_get_contents($configFilePath);
         $this->assertContains('namespace: App\TestSuite\Codeception', $result, 'namespace must be enabled');
         $this->assertContains('suite_namespace: App\Test\Acceptance', $result, 'suite_namespace must be enabled');
-        $this->assertContains('\Cake\Codeception\Helper', $result, 'Cake helper module must be enabled');
+        $this->assertNotContains('\Cake\Codeception', $result, 'Cake helper module must not be enabled');
         $this->assertContains('\App\TestSuite\Codeception\Helper\Acceptance', $result, 'Acceptance helper must be enabled');
     }
 
