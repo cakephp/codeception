@@ -21,10 +21,8 @@ class Installer
         $to = 'new Cake\\Codeception\\Command\\';
 
         $needles = [
-            'Build',
             'Bootstrap',
             'GenerateCest',
-            'GenerateGroup',
             'GenerateSuite',
         ];
 
