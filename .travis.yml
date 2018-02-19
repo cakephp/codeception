@@ -14,6 +14,7 @@ env:
 #    - CAKE_VERSION=3.5.*
   global:
     - REINSTALL_CAKEPHP=0
+    - DEFAULT=1
 
 cache:
   directories:
@@ -26,6 +27,8 @@ matrix:
   include:
   - php: 5.6
     env: CAKE_VERSION=3.2.* REINSTALL_CAKEPHP=1
+  - php: 7.1
+    env: PHPCS=1 DEFAULT=0
 
 before_install:
   - phpenv config-rm xdebug.ini
@@ -34,30 +37,30 @@ before_install:
 
 install:
   - composer install --prefer-dist --no-interaction
-  - composer require --dev squizlabs/php_codesniffer
-  - composer create-project --no-interaction cakephp/app:$CAKE_VERSION tests/test_app
-  - cd tests/test_app
+  - if [ ! -z ${CAKE_VERSION} ]; then composer create-project --no-interaction cakephp/app:$CAKE_VERSION tests/test_app; fi
+  - if [ $DEFAULT = '1' ]; then cd tests/test_app; fi
   - if [ $REINSTALL_CAKEPHP -eq 1 ]; then rm composer.lock && rm -rf vendor/ && composer require cakephp/cakephp:$CAKE_VERSION ; fi
-  - composer config repositories.cakephp/codeception vcs ../../
-  - composer require --prefer-source --dev cakephp/codeception:dev-$TRAVIS_BRANCH#$TRAVIS_COMMIT
-  - composer run-script --no-interaction post-install-cmd
-  - cd ../sample_app
-  - cp -r ../test_app/src/ src/ && cp -r ../test_app/config/ config/ && cp -r ../test_app/webroot/ webroot/
-  - cp ../test_app/src/Console/Installer.php src/Console/.
-  - cp ../test_app/composer.json .
-  - composer install --no-interaction
+  - if [ $DEFAULT = '1' ]; then composer config repositories.cakephp/codeception vcs ../../; fi
+  - if [ $DEFAULT = '1' ]; then composer require --prefer-source --dev cakephp/codeception:dev-$TRAVIS_BRANCH#$TRAVIS_COMMIT; fi
+  - if [ $DEFAULT = '1' ]; then composer run-script --no-interaction post-install-cmd; fi
+  - if [ $DEFAULT = '1' ]; then cd ../sample_app; fi
+  - if [ $DEFAULT = '1' ]; then cp -r ../test_app/src/ src/ && cp -r ../test_app/config/ config/ && cp -r ../test_app/webroot/ webroot/; fi
+  - if [ $DEFAULT = '1' ]; then cp ../test_app/src/Console/Installer.php src/Console/.; fi
+  - if [ $DEFAULT = '1' ]; then cp ../test_app/composer.json .; fi
+  - if [ $DEFAULT = '1' ]; then composer install --no-interaction; fi
 
 before_script:
-  - cd $TRAVIS_BUILD_DIR/tests/test_app
-  - vendor/bin/codecept bootstrap
-  - vendor/bin/codecept generate:cest Functional Foo
-  - vendor/bin/codecept generate:cept Functional Foo
-  - vendor/bin/codecept generate:suite Api
+  - if [ $PHPCS = '1' ]; then composer require --dev squizlabs/php_codesniffer; fi
+  - if [ $DEFAULT = '1' ]; then cd $TRAVIS_BUILD_DIR/tests/test_app; fi
+  - if [ $DEFAULT = '1' ]; then vendor/bin/codecept bootstrap; fi
+  - if [ $DEFAULT = '1' ]; then vendor/bin/codecept generate:cest Functional Foo; fi
+  - if [ $DEFAULT = '1' ]; then vendor/bin/codecept generate:cept Functional Foo; fi
+  - if [ $DEFAULT = '1' ]; then vendor/bin/codecept generate:suite Api; fi
 
 script:
-  - cd $TRAVIS_BUILD_DIR && vendor/bin/phpcs --standard=PSR2 --extensions=php --ignore=tests/*_app src/ tests/
-  - cd $TRAVIS_BUILD_DIR && vendor/bin/phpunit
-  - cd $TRAVIS_BUILD_DIR/tests/sample_app && vendor/bin/codecept build && vendor/bin/codecept run
+  - if [ $PHPCS = '1' ]; then cd $TRAVIS_BUILD_DIR && vendor/bin/phpcs --standard=PSR2 --extensions=php --ignore=tests/*_app src/ tests/; fi
+  - if [ $DEFAULT = '1' ]; then cd $TRAVIS_BUILD_DIR && vendor/bin/phpunit; fi
+  - if [ $DEFAULT = '1' ]; then cd $TRAVIS_BUILD_DIR/tests/sample_app && vendor/bin/codecept build && vendor/bin/codecept run; fi
 
 notifications:
   email: false
