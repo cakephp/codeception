@@ -1,7 +1,7 @@
 <?php
 namespace Cake\Codeception\Test\TestCase\Command;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 
 class GenerateCestTest extends TestCase
 {

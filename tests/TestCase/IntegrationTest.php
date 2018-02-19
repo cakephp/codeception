@@ -1,7 +1,7 @@
 <?php
 namespace Cake\Codeception\Test\TestCase;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 
 class IntegrationTest extends TestCase
 {
