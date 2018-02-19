@@ -25,6 +25,8 @@ matrix:
 
   include:
   - php: 5.4
+    env: CAKE_VERSION=3.1.* REINSTALL_CAKEPHP=1
+  - php: 5.5
     env: CAKE_VERSION=3.2.* REINSTALL_CAKEPHP=1
   - php: 5.5
     env: CAKE_VERSION=3.3.*
