@@ -72,9 +72,11 @@ class Connector extends Client
             'environment' => $environment,
         ];
 
-        if (class_exists('\Cake\Http\ServerRequest')) {
+        if (class_exists('\Cake\Http\ServerRequest') && $this->hasApplicationClass()) {
+            // CakePHP >= 3.4
             $this->cake['request'] = new \Cake\Http\ServerRequest($props);
         } else {
+            // CakePHP <= 3.3 or Non PSR-7 dispatcher
             $this->cake['request'] = new Request($props);
 
             // set params
@@ -94,6 +96,9 @@ class Connector extends Client
     protected function filterResponse($response)
     {
         $this->cake['response'] = $response;
+        if (is_a($response, '\Zend\Diactoros\Response') && class_exists('\Cake\Http\ResponseTransformer')) {
+            $response = \Cake\Http\ResponseTransformer::toCake($response);
+        }
 
         foreach ($response->cookie() as $cookie) {
             $this->getCookieJar()->set(new Cookie(
@@ -124,12 +129,13 @@ class Connector extends Client
     protected function doRequest($request)
     {
         $response = new Response();
-        $applicationClass = '\\' . Configure::read('App.namespace') . '\Application';
 
         try {
-            if (class_exists('\Cake\Http\Server') && class_exists($applicationClass)) {
-                $response = $this->runApplication($applicationClass, $request);
+            if (is_a($request, '\Cake\Http\ServerRequest')) {
+                // Run with PSR-7 dispatcher
+                $response = $this->runApplication($request);
             } else {
+                // Run with legacy dispatcher
                 $response = $this->runDispatcher($request, $response);
             }
         } catch (\PHPUnit_Exception $e) {
@@ -142,7 +148,7 @@ class Connector extends Client
     }
 
     /**
-     * Run application CakePHP < 3.3
+     * Run application CakePHP < 3.4
      *
      * @param \Cake\Network\Request $request Cake request.
      * @return \Cake\Network\Response Cake response.
@@ -163,13 +169,13 @@ class Connector extends Client
     }
 
     /**
-     * Run application CakePHP > 3.3
+     * Run application CakePHP >= 3.4
      *
-     * @param string $applicationClass
      * @return \Cake\Http\Response Cake response.
      */
-    protected function runApplication($applicationClass, $request)
+    protected function runApplication($request)
     {
+        $applicationClass = $this->getApplicationClassName();
         $server = new \Cake\Http\Server(new $applicationClass(CONFIG));
 
         $server->eventManager()->on(
@@ -247,5 +253,25 @@ class Connector extends Client
     public function viewSpy(Event $event)
     {
         $this->cake['view'] = $event->subject();
+    }
+
+    /**
+     * Get Application class name
+     *
+     * @return string
+     */
+    protected function getApplicationClassName()
+    {
+        return '\\' . Configure::read('App.namespace') . '\Application';
+    }
+
+    /**
+     * App has Application class
+     *
+     * @return bool
+     */
+    protected function hasApplicationClass()
+    {
+        return class_exists('\\' . Configure::read('App.namespace') . '\Application');
     }
 }
