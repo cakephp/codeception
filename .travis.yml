@@ -44,7 +44,7 @@ install:
   - if [ $DEFAULT = '1' ]; then composer require --prefer-source --dev cakephp/codeception:dev-$TRAVIS_BRANCH#$TRAVIS_COMMIT; fi
   - if [ $DEFAULT = '1' ]; then composer run-script --no-interaction post-install-cmd; fi
   - if [ $DEFAULT = '1' ]; then cd ../sample_app; fi
-  - if [ $DEFAULT = '1' ]; then cp -r ../test_app/src/ src/ && cp -r ../test_app/config/ config/ && cp -r ../test_app/webroot/ webroot/; fi
+  - if [ $DEFAULT = '1' ]; then cp -rv ../test_app/src ./ && cp -r ../test_app/config ./ && cp -r ../test_app/webroot ./; fi
   - if [ $DEFAULT = '1' ]; then cp ../test_app/src/Console/Installer.php src/Console/.; fi
   - if [ $DEFAULT = '1' ]; then cp ../test_app/composer.json .; fi
   - if [ $DEFAULT = '1' ]; then composer install --no-interaction; fi
