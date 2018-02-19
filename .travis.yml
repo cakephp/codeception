@@ -11,7 +11,7 @@ env:
   matrix:
     - CAKE_VERSION=3.3.*
     - CAKE_VERSION=3.4.*
-#    - CAKE_VERSION=3.5.*
+    - CAKE_VERSION=3.5.*
   global:
     - REINSTALL_CAKEPHP=0
     - DEFAULT=1
