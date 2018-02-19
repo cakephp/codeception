@@ -37,6 +37,7 @@ before_install:
   - phpenv config-rm xdebug.ini
   - composer self-update
   - git fetch --unshallow
+  - git branch ci-build
 
 install:
   - composer install --prefer-dist --no-interaction
@@ -44,7 +45,7 @@ install:
   - if [ $DEFAULT = '1' ]; then cd tests/test_app; fi
   - if [ $REINSTALL_CAKEPHP -eq 1 ]; then rm composer.lock && rm -rf vendor/ && composer require cakephp/cakephp:$CAKE_VERSION ; fi
   - if [ $DEFAULT = '1' ]; then composer config repositories.cakephp/codeception vcs ../../; fi
-  - if [ $DEFAULT = '1' ]; then composer require --prefer-source --dev cakephp/codeception:dev-$TRAVIS_BRANCH#$TRAVIS_COMMIT; fi
+  - if [ $DEFAULT = '1' ]; then composer require --prefer-source --dev cakephp/codeception:dev-ci-build#$TRAVIS_COMMIT; fi
   - if [ $DEFAULT = '1' ]; then composer run-script --no-interaction post-install-cmd; fi
   - if [ $DEFAULT = '1' ]; then cd ../sample_app; fi
   - if [ $DEFAULT = '1' ]; then cp -rv ../test_app/src ./ && cp -r ../test_app/config ./ && cp -r ../test_app/webroot ./; fi
