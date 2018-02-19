@@ -129,7 +129,9 @@ class Connector extends Client
         );
 
         try {
+            ob_start();
             $dispatcher->dispatch($request, $response);
+            ob_end_clean();
         } catch (\PHPUnit_Exception $e) {
             throw $e;
         } catch (\Exception $e) {
