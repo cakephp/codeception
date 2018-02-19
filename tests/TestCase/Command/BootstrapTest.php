@@ -29,15 +29,15 @@ class BootstrapTest extends TestCase
         $testsDir = TEST_APP_ROOT . 'tests' . DS;
 
         $acceptanceDir = $testsDir . 'Acceptance' . DS;
-        $this->assertDirectoryExists($acceptanceDir, 'Acceptance test suite directory must be auto-created');
+        $this->assertTrue(is_dir($acceptanceDir), 'Acceptance test suite directory must be auto-created');
         $this->assertFileExists($acceptanceDir . 'bootstrap.php', 'Acceptance bootstrap.php must be auto-created');
         
         $functionalDir = $testsDir . 'Functional' . DS;
-        $this->assertDirectoryExists($functionalDir, 'Functional test suite directory must be auto-created');
+        $this->assertTrue(is_dir($functionalDir), 'Functional test suite directory must be auto-created');
         $this->assertFileExists($functionalDir . 'bootstrap.php', 'Functional bootstrap.php must be auto-created');
 
         $unitDir = $testsDir . 'Unit' . DS;
-        $this->assertDirectoryExists($unitDir, 'Unit test suite directory must be auto-created');
+        $this->assertTrue(is_dir($unitDir), 'Unit test suite directory must be auto-created');
         $this->assertFileExists($unitDir . 'bootstrap.php', 'Unit bootstrap.php must be auto-created');
     }
 

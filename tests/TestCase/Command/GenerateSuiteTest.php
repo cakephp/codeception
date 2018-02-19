@@ -18,7 +18,7 @@ class GenerateSuiteTest extends TestCase
     {
         $testsDir = TEST_APP_ROOT . 'tests' . DS . 'Api' . DS;
 
-        $this->assertDirectoryExists($testsDir, 'Api test suite directory must be auto-created');
+        $this->assertTrue(is_dir($testsDir), 'Api test suite directory must be auto-created');
         $this->assertFileExists($testsDir . 'bootstrap.php', 'Api bootstrap.php must be auto-created');
     }
 
