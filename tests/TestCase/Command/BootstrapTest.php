@@ -11,15 +11,17 @@ class BootstrapTest extends TestCase
         $testSuiteDir = TEST_APP_ROOT . 'src' . DS . 'TestSuite' . DS . 'Codeception' . DS;
         $this->assertTrue(is_dir($testSuiteDir), 'src/TestSuite/Codeception directory must be auto-created');
 
-        $this->assertTrue(file_exists($testSuiteDir . 'Helper/Acceptance.php'), 'AcceptanceHelper must be auto-created');
-        $this->assertTrue(file_exists($testSuiteDir . 'Helper/Functional.php'), 'FunctionalHelper must be auto-created');
-        $this->assertTrue(file_exists($testSuiteDir . 'Helper/Unit.php'), 'UnitHelper must be auto-created');
+        $this->assertFileExists($testSuiteDir . 'Helper/Acceptance.php', 'AcceptanceHelper must be auto-created');
+        $this->assertFileExists($testSuiteDir . 'Helper/Functional.php', 'FunctionalHelper must be auto-created');
+        $this->assertFileExists($testSuiteDir . 'Helper/Unit.php', 'UnitHelper must be auto-created');
 
-        $this->assertTrue(file_exists($testSuiteDir . 'AcceptanceTester.php'), 'AcceptanceTester must be auto-generated');
-        $this->assertTrue(file_exists($testSuiteDir . 'FunctionalTester.php'), 'FunctionalTester must be auto-generated');
-        $this->assertTrue(file_exists($testSuiteDir . 'UnitTester.php'), 'UnitTester must be auto-generated');
+        $this->assertFileExists($testSuiteDir . 'AcceptanceTester.php', 'AcceptanceTester must be auto-generated');
+        $this->assertFileExists($testSuiteDir . 'FunctionalTester.php', 'FunctionalTester must be auto-generated');
+        $this->assertFileExists($testSuiteDir . 'UnitTester.php', 'UnitTester must be auto-generated');
 
-        $this->assertTrue(file_exists($testSuiteDir . '_generated/.gitignore'), '_generated directory .gitignore must be auto-created');
+        // @codingStandardsIgnoreStart
+        $this->assertFileExists($testSuiteDir . '_generated/.gitignore', '_generated directory .gitignore must be auto-created');
+        // @codingStandardsIgnoreEnd
     }
 
     public function testSuitesCreatedInTests()
@@ -59,7 +61,9 @@ class BootstrapTest extends TestCase
         $this->assertContains('namespace: App\TestSuite\Codeception', $result, 'namespace must be enabled');
         $this->assertContains('suite_namespace: App\Test\Acceptance', $result, 'suite_namespace must be enabled');
         $this->assertNotContains('\Cake\Codeception', $result, 'Cake helper module must not be enabled');
+        // @codingStandardsIgnoreStart
         $this->assertContains('\App\TestSuite\Codeception\Helper\Acceptance', $result, 'Acceptance helper must be enabled');
+        // @codingStandardsIgnoreEnd
     }
 
     public function testFunctionalConfigurationFileCreated()
@@ -71,7 +75,9 @@ class BootstrapTest extends TestCase
         $this->assertContains('namespace: App\TestSuite\Codeception', $result, 'namespace must be enabled');
         $this->assertContains('suite_namespace: App\Test\Functional', $result, 'suite_namespace must be enabled');
         $this->assertContains('\Cake\Codeception\Helper', $result, 'Cake helper module must be enabled');
+        // @codingStandardsIgnoreStart
         $this->assertContains('\App\TestSuite\Codeception\Helper\Functional', $result, 'Functional helper must be enabled');
+        // @codingStandardsIgnoreEnd
     }
 
     public function testUnitConfigurationFileCreated()

@@ -42,8 +42,8 @@ class GenerateSuite extends \Codeception\Command\GenerateSuite
             $this->createFile(
                 $dir . $suite . DIRECTORY_SEPARATOR . $config['settings']['bootstrap'],
                 "<?php\n",
-            true
-        );
+                true
+            );
         }
 
         $helperName = ucfirst($suite);
