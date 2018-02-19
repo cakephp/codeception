@@ -3,11 +3,10 @@ namespace Cake\Codeception;
 
 use Cake\Codeception\Helper\ConfigTrait;
 use Cake\Codeception\Helper\DbTrait;
+use Cake\Codeception\Helper\FixtureTrait;
 use Cake\Codeception\Helper\ORMTrait;
 use Cake\Core\Configure;
-use Cake\Event\EventManager;
-use Cake\TestSuite\Fixture\FixtureManager;
-use Codeception\TestCase;
+use Codeception\TestInterface;
 
 class Framework extends \Codeception\Lib\Framework
 {
@@ -15,6 +14,7 @@ class Framework extends \Codeception\Lib\Framework
     use ConfigTrait;
     use DbTrait;
     use ORMTrait;
+    use FixtureTrait;
 
     /**
      * Module's default configuration.
@@ -28,83 +28,41 @@ class Framework extends \Codeception\Lib\Framework
     ];
 
     /**
-     * The class responsible for managing the creation, loading and removing of fixtures
-     *
-     * @var \Cake\TestSuite\Fixture\FixtureManager
-     */
-    protected $fixtureManager = null;
-
-    /**
      * Configure values to restore at end of test.
      *
      * @var array
      */
     protected $configure = [];
 
-    protected $testCase = null;
+    // @codingStandardsIgnoreStart
+    public function _initialize()// @codingStandardsIgnoreEnd
+    {
+        $this->loadFixtureManager();
+    }
 
     // @codingStandardsIgnoreStart
-    public function _before(TestCase $test) // @codingStandardsIgnoreEnd
+    public function _afterSuite()// @codingStandardsIgnoreEnd
     {
-        if (method_exists($test, 'getTestClass')) {
-            $this->testCase = $test->getTestClass();
-        } else {
-            $this->testCase = $test;
-        }
+        $this->shutDownFixtureManager();
+    }
 
-        if (!isset($this->testCase->autoFixtures)) {
-            $this->testCase->autoFixtures = $this->config['autoFixtures'];
-        }
-
-        if (!isset($this->testCase->dropTables)) {
-            $this->testCase->dropTables = $this->config['dropTables'];
-        }
-
-        if (!isset($this->testCase->cleanUpInsertedRecords)) {
-            $this->testCase->cleanUpInsertedRecords = $this->config['cleanUpInsertedRecords'];
-        }
-
-        EventManager::instance(new EventManager());
-        $this->fixtureManager = new FixtureManager();
-
-        if ($this->testCase->autoFixtures) {
-            if (!isset($this->testCase->fixtures)) {
-                $this->testCase->fixtures = [];
-            }
-            $this->loadFixtures($this->testCase->fixtures);
-        }
-
+    // @codingStandardsIgnoreStart
+    public function _before(TestInterface $test) // @codingStandardsIgnoreEnd
+    {
+        $this->loadFixture($test);
         $this->snapshotApplication();
     }
 
     // @codingStandardsIgnoreStart
-    public function _after(TestCase $test) // @codingStandardsIgnoreEnd
+    public function _after(TestInterface $test) // @codingStandardsIgnoreEnd
     {
         $this->resetApplication();
 
-        if ($this->testCase->cleanUpInsertedRecords) {
+        if ($this->config['cleanUpInsertedRecords']) {
             $this->cleanUpInsertedRecords();
         }
 
-        $this->fixtureManager->unload($this->testCase);
-        if ($this->testCase->dropTables) {
-            $this->fixtureManager->shutDown();
-        }
-    }
-
-    /**
-     * Chooses which fixtures to load for a given test
-     *
-     * @return void
-     */
-    public function loadFixtures($fixtures)
-    {
-        if (func_num_args() > 1) {
-            $fixtures = func_get_args();
-        }
-        $this->testCase->fixtures = $fixtures;
-        $this->fixtureManager->fixturize($this->testCase);
-        $this->fixtureManager->load($this->testCase);
+        $this->unloadFixture($test);
     }
 
     /**
