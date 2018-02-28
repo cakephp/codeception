@@ -17,8 +17,8 @@ modules:
     config:
         Db:
            dsn: 'mysql:host=0.0.0.0;dbname=cakephp_test'
-           user: 'root'
-           password: ''
+           user: 'travis'
+           password: 'travis'
            populate: true
            cleanup: true
            reconnect: true
