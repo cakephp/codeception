@@ -14,6 +14,8 @@ env:
   global:
     - REINSTALL_CAKEPHP=0
     - DEFAULT=1
+    - DB=mysql
+    - db_dsn='mysql://root@0.0.0.0/cakephp_test'
 
 cache:
   directories:
@@ -54,6 +56,7 @@ install:
   - if [ $DEFAULT = '1' ]; then composer install --no-interaction; fi
 
 before_script:
+  - if [ $DB = 'mysql' ]; then mysql -u root -e 'CREATE DATABASE cakephp_test;'; fi
   - if [ $PHPCS = '1' ]; then composer require --dev squizlabs/php_codesniffer; fi
   - if [ $DEFAULT = '1' ]; then cd $TRAVIS_BUILD_DIR/tests/test_app; fi
   - if [ $DEFAULT = '1' ]; then vendor/bin/codecept bootstrap; fi

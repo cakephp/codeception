@@ -13,3 +13,12 @@ actor_suffix: Tester
 extensions:
     enabled:
         - Codeception\Extension\RunFailed
+modules:
+    config:
+        Db:
+           dsn: 'mysql:host=0.0.0.0;dbname=cakephp_test'
+           user: 'root'
+           password: ''
+           populate: true
+           cleanup: true
+           reconnect: true

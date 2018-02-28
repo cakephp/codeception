@@ -13,4 +13,9 @@ if (class_exists('\PHPUnit\Runner\Version') && version_compare(\PHPUnit\Runner\V
     }
 }
 
+if (getenv('db_dsn')) {
+    putenv('DATABASE_URL=' . getenv('db_dsn'));
+    putenv('DATABASE_TEST_URL=' . getenv('db_dsn'));
+}
+
 require dirname(__DIR__) . '/config/bootstrap.php';

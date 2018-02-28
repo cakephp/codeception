@@ -12,4 +12,5 @@ modules:
     enabled:
         # add a framework module here
         - \Cake\Codeception\Helper
+        - Db
         - \App\TestSuite\Codeception\Helper\Functional
