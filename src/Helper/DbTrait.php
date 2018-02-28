@@ -22,13 +22,30 @@ trait DbTrait
         }
 
         if (!empty($model) && !empty($records[$model])) {
-            TableRegistry::get($model)->deleteAll($records[$model]);
+            $this->deleteAllRecords($model, $records[$model]);
+
             return;
         }
 
         foreach ($records as $model => $data) {
-            TableRegistry::get($model)->deleteAll($data);
+            $this->deleteAllRecords($model, $data);
         }
+    }
+
+    /**
+     * Delete inserted records with constraints disabled.
+     *
+     * @param string $model Model alias.
+     * @param array $data Delete target conditions.
+     * @return void
+     */
+    protected function deleteAllRecords($model, $data)
+    {
+        $table = TableRegistry::get($model);
+        $table->connection()
+            ->disableConstraints(function () use ($table, $data) {
+                $table->deleteAll($data);
+            });
     }
 
     /**
