@@ -5,7 +5,7 @@ namespace App\Test\Functional;
 use App\TestSuite\Codeception\FunctionalTester;
 
 /**
- * Test for CakeFixture::loadFixtures()
+ * Test for loadFixtures()
  */
 class FixtureLoadCest
 {
