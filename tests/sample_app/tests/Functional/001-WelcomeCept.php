@@ -1,4 +1,4 @@
-<?php use App\Test\Functional\FunctionalTester;
+<?php use App\TestSuite\Codeception\FunctionalTester;
 $I = new FunctionalTester($scenario);
 $I->wantTo('check the homepage');
 $I->amOnPage('/');

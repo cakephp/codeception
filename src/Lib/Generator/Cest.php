@@ -8,7 +8,6 @@ class Cest extends \Codeception\Lib\Generator\Cest
 <?php
 {{namespace}}
 
-
 class {{name}}Cest
 {
     // @codingStandardsIgnoreStart
@@ -26,5 +25,6 @@ class {{name}}Cest
     {
     }
 }
+
 EOF;
 }

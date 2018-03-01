@@ -52,7 +52,6 @@ trait ORMTrait
                 $this->assertTrue(true);
                 return;
             }
-
         }
 
         $this->assertNotEquals($type, $association->type());

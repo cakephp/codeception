@@ -57,7 +57,7 @@ class Connector extends Client
      * @param \Symfony\Component\BrowserKit\Request $request BrowserKit request.
      * @return \Cake\Network\Request Cake request.
      */
-    protected function filterRequest(\Symfony\Component\BrowserKit\Request $request)
+    protected function filterRequest(BrowserKitRequest $request)
     {
         $url = preg_replace('/^https?:\/\/[a-z0-9\-\.]+/', '', $request->getUri());
 
@@ -72,11 +72,17 @@ class Connector extends Client
             'environment' => $environment,
         ];
 
-        $this->cake['request'] = new Request($props);
+        if (class_exists('\Cake\Http\ServerRequest') && $this->hasApplicationClass()) {
+            // CakePHP >= 3.4
+            $this->cake['request'] = new \Cake\Http\ServerRequest($props);
+        } else {
+            // CakePHP <= 3.3 or Non PSR-7 dispatcher
+            $this->cake['request'] = new Request($props);
 
-        // set params
-        Router::setRequestInfo($this->cake['request']);
-        $this->cake['request']->params = Router::parse($url);
+            // set params
+            Router::setRequestInfo($this->cake['request']);
+            $this->cake['request']->params = Router::parse($url);
+        }
 
         return $this->cake['request'];
     }
@@ -90,6 +96,9 @@ class Connector extends Client
     protected function filterResponse($response)
     {
         $this->cake['response'] = $response;
+        if (is_a($response, '\Zend\Diactoros\Response') && class_exists('\Cake\Http\ResponseTransformer')) {
+            $response = \Cake\Http\ResponseTransformer::toCake($response);
+        }
 
         foreach ($response->cookie() as $cookie) {
             $this->getCookieJar()->set(new Cookie(
@@ -121,20 +130,60 @@ class Connector extends Client
     {
         $response = new Response();
 
+        try {
+            if (is_a($request, '\Cake\Http\ServerRequest')) {
+                // Run with PSR-7 dispatcher
+                $response = $this->runApplication($request);
+            } else {
+                // Run with legacy dispatcher
+                $response = $this->runDispatcher($request, $response);
+            }
+        } catch (\PHPUnit_Exception $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            $response = $this->handleError($e);
+        }
+
+        return $response;
+    }
+
+    /**
+     * Run application CakePHP < 3.4
+     *
+     * @param \Cake\Network\Request $request Cake request.
+     * @return \Cake\Network\Response Cake response.
+     */
+    protected function runDispatcher($request, $response)
+    {
         $dispatcher = DispatcherFactory::create();
         $dispatcher->eventManager()->on(
             'Dispatcher.beforeDispatch',
             ['priority' => 999],
             [$this, 'controllerSpy']
         );
+        ob_start();
+        $dispatcher->dispatch($request, $response);
+        ob_end_clean();
 
-        try {
-            $dispatcher->dispatch($request, $response);
-        } catch (\PHPUnit_Exception $e) {
-            throw $e;
-        } catch (\Exception $e) {
-            $response = $this->handleError($e);
-        }
+        return $response;
+    }
+
+    /**
+     * Run application CakePHP >= 3.4
+     *
+     * @return \Cake\Http\Response Cake response.
+     */
+    protected function runApplication($request)
+    {
+        $applicationClass = $this->getApplicationClassName();
+        $server = new \Cake\Http\Server(new $applicationClass(CONFIG));
+
+        $server->eventManager()->on(
+            'Dispatcher.beforeDispatch',
+            ['priority' => 999],
+            [$this, 'controllerSpy']
+        );
+        $response = $server->run($request);
 
         return $response;
     }
@@ -204,5 +253,25 @@ class Connector extends Client
     public function viewSpy(Event $event)
     {
         $this->cake['view'] = $event->subject();
+    }
+
+    /**
+     * Get Application class name
+     *
+     * @return string
+     */
+    protected function getApplicationClassName()
+    {
+        return '\\' . Configure::read('App.namespace') . '\Application';
+    }
+
+    /**
+     * App has Application class
+     *
+     * @return bool
+     */
+    protected function hasApplicationClass()
+    {
+        return class_exists('\\' . Configure::read('App.namespace') . '\Application');
     }
 }

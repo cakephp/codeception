@@ -1,18 +1,14 @@
+# Codeception Test Suite Configuration
 #
-# CakePHP Codeception Acceptance Test Suite Configuration
-#
-# Allows you to perform web requests in the browser using the PhpBrowser
-# or WebDriver. If you need both the PhpBrowser and the
-# WebDriver, create a separate suite.
-#
+# Suite for acceptance tests.
+# Perform tests in browser using the WebDriver or PhpBrowser.
+# If you need both WebDriver and PHPBrowser tests - create a separate suite.
 
-class_name: AcceptanceTester
-namespace: App\Test\Acceptance
+actor: AcceptanceTester
+namespace: App\TestSuite\Codeception
+suite_namespace: App\Test\Acceptance
 modules:
     enabled:
-        - Cake\Codeception\Helper
-        - PhpBrowser
-        - App\TestSuite\Codeception\AcceptanceHelper
-    config:
-        PhpBrowser:
-            url: 'http://localhost/myapp/'
+        - PhpBrowser:
+            url: http://localhost/myapp
+        - \App\TestSuite\Codeception\Helper\Acceptance

@@ -8,7 +8,7 @@ use Cake\Codeception\Helper\RouterTrait;
 use Cake\Codeception\Helper\SessionTrait;
 use Cake\Codeception\Helper\ViewTrait;
 use Cake\Routing\Router;
-use Codeception\TestCase;
+use Codeception\TestInterface;
 
 class Helper extends Framework
 {
@@ -21,7 +21,7 @@ class Helper extends Framework
     use ViewTrait;
 
     // @codingStandardsIgnoreStart
-    public function _before(TestCase $test) // @codingStandardsIgnoreEnd
+    public function _before(TestInterface $test) // @codingStandardsIgnoreEnd
     {
         parent::_before($test);
         $this->client = $this->getConnectorInstance();

@@ -1,7 +1,7 @@
 <?php
 namespace Cake\Codeception\Test\TestCase;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 
 class IntegrationTest extends TestCase
 {
@@ -9,10 +9,13 @@ class IntegrationTest extends TestCase
     {
         $result = file_get_contents(TEST_APP_BIN . 'codecept');
 
-        $expected = 'new Cake\Codeception\Command\Build';
-        $this->assertContains($expected, $result, 'Codecept must use cake build command');
+        $expectedBootstrap = 'new Cake\Codeception\Command\Bootstrap';
+        $this->assertContains($expectedBootstrap, $result, 'Codecept must use cake build command');
 
-        $expected = 'new Cake\Codeception\Command\Bootstrap';
-        $this->assertContains($expected, $result, 'Codecept must use cake build command');
+        $expectedGenerateCest = 'new Cake\Codeception\Command\GenerateCest';
+        $this->assertContains($expectedGenerateCest, $result, 'Codecept must use cake generate:cest command');
+
+        $expectedGenerateSuite = 'new Cake\Codeception\Command\GenerateSuite';
+        $this->assertContains($expectedGenerateSuite, $result, 'Codecept must use cake generate:suite command');
     }
 }

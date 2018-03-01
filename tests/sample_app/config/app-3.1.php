@@ -62,7 +62,7 @@ return [
      *   You should treat it as extremely sensitive data.
      */
     'Security' => [
-        'salt' => 'd32ab76c918803861140b9e63aaf245b84c983fff79f985518eb28efb5f8707f',
+        'salt' => '03515dc4134223b9e987a0cf08fd7f82d896ffa4e7bf517082aee1fccdb47224',
     ],
 
     /**
@@ -87,9 +87,8 @@ return [
         ],
 
         /**
-         * Configure the cache used for general framework caching. Path information,
-         * object listings, and translation cache files are stored with this
-         * configuration.
+         * Configure the cache used for general framework caching.
+         * Translation cache files are stored with this configuration.
          */
         '_cake_core_' => [
             'className' => 'File',
@@ -150,15 +149,11 @@ return [
     /**
      * Email configuration.
      *
-     * You can configure email transports and email delivery profiles here.
-     *
      * By defining transports separately from delivery profiles you can easily
      * re-use transport configuration across multiple profiles.
      *
      * You can specify multiple configurations for production, development and
      * testing.
-     *
-     * ### Configuring transports
      *
      * Each transport needs a `className`. Valid options are as follows:
      *
@@ -167,16 +162,8 @@ return [
      *  Debug  - Do not send the email, just return the result
      *
      * You can add custom transports (or override existing transports) by adding the
-     * appropriate file to src/Network/Email.  Transports should be named
+     * appropriate file to src/Mailer/Transport.  Transports should be named
      * 'YourTransport.php', where 'Your' is the name of the transport.
-     *
-     * ### Configuring delivery profiles
-     *
-     * Delivery profiles allow you to predefine various properties about email
-     * messages from your application and give the settings a name. This saves
-     * duplication across your application and makes maintenance and development
-     * easier. Each profile accepts a number of keys. See `Cake\Network\Email\Email`
-     * for more information.
      */
     'EmailTransport' => [
         'default' => [
@@ -192,6 +179,15 @@ return [
         ],
     ],
 
+    /**
+     * Email delivery profiles
+     *
+     * Delivery profiles allow you to predefine various properties about email
+     * messages from your application and give the settings a name. This saves
+     * duplication across your application and makes maintenance and development
+     * easier. Each profile accepts a number of keys. See `Cake\Network\Email\Email`
+     * for more information.
+     */
     'Email' => [
         'default' => [
             'transport' => 'default',
@@ -213,36 +209,37 @@ return [
             'driver' => 'Cake\Database\Driver\Mysql',
             'persistent' => false,
             'host' => 'localhost',
-            /*
-            * CakePHP will use the default DB port based on the driver selected
-            * MySQL on MAMP uses port 8889, MAMP users will want to uncomment
-            * the following line and set the port accordingly
-            */
+            /**
+             * CakePHP will use the default DB port based on the driver selected
+             * MySQL on MAMP uses port 8889, MAMP users will want to uncomment
+             * the following line and set the port accordingly
+             */
             //'port' => 'nonstandard_port_number',
-            'username' => 'my_app',
-            'password' => 'secret',
-            'database' => 'my_app',
+            'username' => 'travis',
+            'password' => 'travis',
+            'database' => 'cakephp_test',
             'encoding' => 'utf8',
             'timezone' => 'UTC',
             'cacheMetadata' => true,
+            'log' => false,
 
-            /*
-            * Set identifier quoting to true if you are using reserved words or
-            * special characters in your table or column names. Enabling this
-            * setting will result in queries built using the Query Builder having
-            * identifiers quoted when creating SQL. It should be noted that this
-            * decreases performance because each query needs to be traversed and
-            * manipulated before being executed.
-            */
+            /**
+             * Set identifier quoting to true if you are using reserved words or
+             * special characters in your table or column names. Enabling this
+             * setting will result in queries built using the Query Builder having
+             * identifiers quoted when creating SQL. It should be noted that this
+             * decreases performance because each query needs to be traversed and
+             * manipulated before being executed.
+             */
             'quoteIdentifiers' => false,
 
-            /*
-            * During development, if using MySQL < 5.6, uncommenting the
-            * following line could boost the speed at which schema metadata is
-            * fetched from the database. It can also be set directly with the
-            * mysql configuration directive 'innodb_stats_on_metadata = 0'
-            * which is the recommended value in production environments
-            */
+            /**
+             * During development, if using MySQL < 5.6, uncommenting the
+             * following line could boost the speed at which schema metadata is
+             * fetched from the database. It can also be set directly with the
+             * mysql configuration directive 'innodb_stats_on_metadata = 0'
+             * which is the recommended value in production environments
+             */
             //'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
         ],
 
@@ -255,13 +252,14 @@ return [
             'persistent' => false,
             'host' => 'localhost',
             //'port' => 'nonstandard_port_number',
-            'username' => 'my_app',
-            'password' => 'secret',
-            'database' => 'test_myapp',
+            'username' => 'travis',
+            'password' => 'travis',
+            'database' => 'cakephp_test',
             'encoding' => 'utf8',
             'timezone' => 'UTC',
             'cacheMetadata' => true,
             'quoteIdentifiers' => false,
+            'log' => false,
             //'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
         ],
     ],
@@ -285,7 +283,6 @@ return [
     ],
 
     /**
-     *
      * Session configuration.
      *
      * Contains an array of settings to use for session configuration. The
@@ -299,6 +296,9 @@ return [
      *   `session.cookie_path` php.ini config. Defaults to base path of app.
      * - `timeout` - The time in minutes the session should be valid for.
      *    Pass 0 to disable checking timeout.
+     *    Please note that php.ini's session.gc_maxlifetime must be equal to or greater
+     *    than the largest Session['timeout'] in all served websites for it to have the
+     *    desired effect.
      * - `defaults` - The default configuration set to use as a basis for your session.
      *    There are four built-in options: php, cake, cache, database.
      * - `handler` - Can be used to enable a custom session handler. Expects an

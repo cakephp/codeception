@@ -1,30 +1,23 @@
 <?php
 namespace Cake\Codeception\Command;
 
-use Cake\Codeception\Lib\Generator\Helper;
-use Codeception\Command\Shared\FileSystem;
-use Codeception\Command\Shared\Config;
+use Codeception\Configuration;
+use Codeception\Lib\Generator\Helper;
+use Codeception\Util\Template;
 use Symfony\Component\Console\Input\InputInterface;
+use Codeception\Lib\Generator\Actor as ActorGenerator;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Create new test suite. Requires suite name and actor name
- *
- * * ``
- * * `codecept g:suite api` -> api + ApiTester
- * * `codecept g:suite integration Code` -> integration + CodeTester
- * * `codecept g:suite frontend Front` -> frontend + FrontTester
- *
+ * {@inheritDoc}
  */
 class GenerateSuite extends \Codeception\Command\GenerateSuite
 {
-    use FileSystem;
-    use Config;
-
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $suite = ucfirst($input->getArgument('suite'));
+        $this->addStyles($output);
+        $suite = $input->getArgument('suite');
         $actor = $input->getArgument('actor');
 
         if ($this->containsInvalidCharacters($suite)) {
@@ -32,50 +25,86 @@ class GenerateSuite extends \Codeception\Command\GenerateSuite
             return;
         }
 
-        $config = \Codeception\Configuration::config($input->getOption('config'));
+        $config = $this->getGlobalConfig();
         if (!$actor) {
-            $actor = $suite . $config['actor'];
+            $actor = ucfirst($suite) . $config['actor_suffix'];
         }
-        $config['class_name'] = $actor;
 
-        $dir = \Codeception\Configuration::testsDir();
+        $dir = Configuration::testsDir();
         if (file_exists($dir . $suite . '.suite.yml')) {
             throw new \Exception("Suite configuration file '$suite.suite.yml' already exists.");
         }
 
-        $this->buildPath($dir . $suite . DIRECTORY_SEPARATOR, 'bootstrap.php');
+        $this->createDirectoryFor($dir . $suite);
 
-        // generate bootstrap
-        $this->save(
-            $dir . $suite . DIRECTORY_SEPARATOR . 'bootstrap.php',
-            "<?php\n// Here you can initialize variables that will be available to your tests\n",
-            true
-        );
-        $actorName = $this->removeSuffix($actor, $config['actor']);
-
-        // generate helper
-        $this->save(
-            \Codeception\Configuration::helpersDir() . $actorName . 'Helper.php',
-            (new Helper($actorName, $config['namespace']))->produce()
-        );
-
-        $enabledModules = [
-            'Cake\Codeception\Helper',
-            'App\TestSuite\Codeception\\' . $actorName . 'Helper',
-        ];
-
-        if ('Unit' === $suite) {
-            array_shift($enabledModules);
+        if ($config['settings']['bootstrap']) {
+            // generate bootstrap file
+            $this->createFile(
+                $dir . $suite . DIRECTORY_SEPARATOR . $config['settings']['bootstrap'],
+                "<?php\n",
+                true
+            );
         }
 
-        $conf = [
-            'class_name' => $actorName . $config['actor'],
-            'modules' => [
-                'enabled' => $enabledModules
-            ]
-        ];
+        $helperName = ucfirst($suite);
 
-        $this->save($dir . $suite . '.suite.yml', Yaml::dump($conf, 2));
+        $file = $this->createDirectoryFor(
+            Configuration::supportDir() . "Helper",
+            "$helperName.php"
+        ) . "$helperName.php";
+
+        $gen = new Helper($helperName, $config['namespace']);
+        // generate helper
+        $this->createFile(
+            $file,
+            $gen->produce()
+        );
+
+        $output->writeln("Helper <info>" . $gen->getHelperName() . "</info> was created in $file");
+
+        $suiteNamespace = str_replace('TestSuite\Codeception', 'Test\\', $config['namespace']) . $helperName;
+
+        $yamlSuiteConfigTemplate = <<<EOF
+actor: {{actor}}
+namespace: {{namespase}}
+suite_namespace: {{suite_namespace}}
+modules:
+    enabled:
+        - \Cake\Codeception\Helper
+        - {{helper}}
+EOF;
+
+        $this->createFile(
+            $dir . $suite . '.suite.yml',
+            $yamlSuiteConfig = (new Template($yamlSuiteConfigTemplate))
+                ->place('actor', $actor)
+                ->place('namespase', $config['namespace'])
+                ->place('suite_namespace', $suiteNamespace)
+                ->place('helper', $gen->getHelperName())
+                ->produce()
+        );
+
+        Configuration::append(Yaml::parse($yamlSuiteConfig));
+        $actorGenerator = new ActorGenerator(Configuration::config());
+
+        $content = $actorGenerator->produce();
+
+        $file = $this->createDirectoryFor(
+            Configuration::supportDir(),
+            $actor
+        ) . $this->getShortClassName($actor);
+        $file .=  '.php';
+
+        $this->createFile($file, $content);
+
+        $output->writeln("Actor <info>" . $actor . "</info> was created in $file");
+
+        $output->writeln("Suite config <info>$suite.suite.yml</info> was created.");
+        $output->writeln(' ');
+        $output->writeln("Next steps:");
+        $output->writeln("1. Edit <bold>$suite.suite.yml</bold> to enable modules for this suite");
+        $output->writeln("2. Create first test with <bold>generate:cest testName</bold> ( or test|cept) command");
+        $output->writeln("3. Run tests of this suite with <bold>codecept run $suite</bold> command");
 
         $output->writeln("<info>Suite $suite generated</info>");
     }

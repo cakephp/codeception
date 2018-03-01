@@ -3,30 +3,73 @@ language: php
 sudo: false
 
 php:
-  - 5.4
-  - 5.5
   - 5.6
+  - 7.0
+  - 7.1
+
+env:
+  matrix:
+    - CAKE_VERSION=3.4.*
+    - CAKE_VERSION=3.5.*
+  global:
+    - REINSTALL_CAKEPHP=0
+    - DEFAULT=1
+    - DB=mysql
+    - db_dsn='mysql://travis:travis@0.0.0.0/cakephp_test'
+
+cache:
+  directories:
+    - vendor
+    - $HOME/.composer/cache
+
+matrix:
+  fast_finish: true
+
+  include:
+  - php: 5.4
+    env: CAKE_VERSION=3.1.* REINSTALL_CAKEPHP=1
+  - php: 5.5
+    env: CAKE_VERSION=3.2.* REINSTALL_CAKEPHP=1
+  - php: 5.5
+    env: CAKE_VERSION=3.3.*
+  - php: 7.1
+    env: PHPCS=1 DEFAULT=0
 
 before_install:
-  - if [ -f .git/shallow ]; then rm .git/shallow; fi
-  - composer install
-  - composer require --prefer-source --dev squizlabs/php_codesniffer:~2.0
-  - composer create-project --prefer-source -s dev --no-interaction cakephp/app tests/test_app
-  - cp tests/Fixture/composer.json tests/test_app/.
-  - cd tests/test_app
-  - composer require --prefer-source --dev cakephp/codeception:dev-$TRAVIS_BRANCH#$TRAVIS_COMMIT
-  - rm composer.lock
-  - composer install --prefer-source
-  - vendor/bin/codecept bootstrap
-  - vendor/bin/codecept generate:cest Functional Foo
-  - vendor/bin/codecept generate:cept Functional Foo
-  - cd ../sample_app
-  - cp ../test_app/composer.json .
-  - cp ../Fixture/Installer.php src/Console/.
-  - composer install --prefer-source
-  - vendor/bin/codecept build
+  - phpenv config-rm xdebug.ini
+  - composer self-update
+  - git fetch --unshallow
+  - git branch ci-build
+
+install:
+  - composer install --prefer-dist --no-interaction
+  - if [ ! -z ${CAKE_VERSION} ]; then composer create-project --no-interaction cakephp/app:$CAKE_VERSION tests/test_app; fi
+  - if [ $DEFAULT = '1' ]; then cd tests/test_app; fi
+  - if [ $REINSTALL_CAKEPHP -eq 1 ]; then rm composer.lock && rm -rf vendor/ && composer require cakephp/cakephp:$CAKE_VERSION ; fi
+  - if [ $DEFAULT = '1' ]; then composer config repositories.cakephp/codeception vcs ../../; fi
+  - if [ $DEFAULT = '1' ]; then composer require --prefer-source --dev cakephp/codeception:dev-ci-build#$TRAVIS_COMMIT; fi
+  - if [ $DEFAULT = '1' ]; then composer run-script --no-interaction post-install-cmd; fi
+  - if [ $DEFAULT = '1' ]; then cd ../sample_app; fi
+  - if [ $DEFAULT = '1' ]; then cp -rv ../test_app/src ./ && cp -r ../test_app/config ./ && cp -r ../test_app/webroot ./; fi
+  - if [ $CAKE_VERSION = '3.1.*' ]; then mv config/app-3.1.php config/app.php ; fi
+  - if [ $DEFAULT = '1' ]; then cp ../test_app/src/Console/Installer.php src/Console/.; fi
+  - if [ $DEFAULT = '1' ]; then cp ../test_app/composer.json .; fi
+  - if [ $DEFAULT = '1' ]; then composer install --no-interaction; fi
+
+before_script:
+  - if [ $DB = 'mysql' ]; then mysql -u root -e 'CREATE DATABASE cakephp_test;'; fi
+  - if [ $DB = 'mysql' ]; then echo "USE mysql;\nUPDATE user SET password=PASSWORD('travis') WHERE user='travis';\nFLUSH PRIVILEGES;\n" | mysql -u root; fi
+  - if [ $PHPCS = '1' ]; then composer require --dev squizlabs/php_codesniffer; fi
+  - if [ $DEFAULT = '1' ]; then cd $TRAVIS_BUILD_DIR/tests/test_app; fi
+  - if [ $DEFAULT = '1' ]; then vendor/bin/codecept bootstrap; fi
+  - if [ $DEFAULT = '1' ]; then vendor/bin/codecept generate:cest Functional Foo; fi
+  - if [ $DEFAULT = '1' ]; then vendor/bin/codecept generate:cept Functional Foo; fi
+  - if [ $DEFAULT = '1' ]; then vendor/bin/codecept generate:suite Api; fi
 
 script:
-  - vendor/bin/codecept run && cd ../..
-  - vendor/bin/phpcs --standard=PSR2 --extensions=php --ignore=tests/*_app src/ tests/
-  - phpunit
+  - if [ $PHPCS = '1' ]; then cd $TRAVIS_BUILD_DIR && vendor/bin/phpcs --standard=PSR2 --extensions=php --ignore=tests/*_app src/ tests/; fi
+  - if [ $DEFAULT = '1' ]; then cd $TRAVIS_BUILD_DIR && vendor/bin/phpunit; fi
+  - if [ $DEFAULT = '1' ]; then cd $TRAVIS_BUILD_DIR/tests/sample_app && vendor/bin/codecept build && vendor/bin/codecept run; fi
+
+notifications:
+  email: false
