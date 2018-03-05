@@ -177,7 +177,7 @@ $I->dontSeeRecord('users', ['email' => 'jadb@cakephp.org']);
 
 ### Miscellaneous
 
-#### Load fixtures (Only Cest)
+#### Load fixtures
 
 In your `Cest` test case, write `$fixutures` property:
 
@@ -185,8 +185,8 @@ In your `Cest` test case, write `$fixutures` property:
 class AwesomeCest
 {
     public $fixtures = [
-        'app.Users',
-        'app.Posts',
+        'app.users',
+        'app.posts',
     ];
 
     // ...
@@ -201,17 +201,32 @@ class AwesomeCest
     public $autoFixtures = false;
     public $dropTables = false;
     public $fixtures = [
-        'app.Users',
-        'app.Posts',
+        'app.users',
+        'app.posts',
     ];
 
     public function tryYourSenario($I)
     {
         // load fixtures manually
-        $I->loadFixtures('Users');
+        $I->loadFixtures('Users', 'Posts');
+        // or load all fixtures
+        $I->loadFixtures();
         // ...
     }
 }
+```
+
+In your `Cept` test case, use `$I->useFixtures()` and `$I->loadFixtures()`:
+
+```php
+$I = new FunctionalTester($scenario);
+
+// You should call `useFixtures` before `loadFixtures`
+$I->useFixtures('app.users', 'app.posts');
+// Then load fixtures manually
+$I->loadFixtures('Users', 'Posts');
+// or load all fixtures
+$I->loadFixtures();
 ```
 
 #### Assert CakePHP version with `expectedCakePHPVersion($ver, $operator = 'ge')`
