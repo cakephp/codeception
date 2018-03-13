@@ -6,7 +6,8 @@ CakePHP 3 Codeception Module
 
 A [codeception](http://codeception.com) module to test your CakePHP 3 powered application. Using Codeception with CakePHP opens up a whole new set of testing capabilities.
 
-#####Front-end testing
+##### Front-end testing
+
 _(i.e. browser-based workflow tests)_
 
   - [[Functional Tests]](http://codeception.com/docs/05-FunctionalTests)
@@ -14,7 +15,8 @@ _(i.e. browser-based workflow tests)_
   - [[Acceptance Tests]](http://codeception.com/docs/04-AcceptanceTests)
     - does the App do what the customer/user expects
 
-#####Back-end testing
+##### Back-end testing
+
 _(i.e. direct, internal method tests)_
 
 - [[API Tests]](http://codeception.com/docs/10-WebServices)
@@ -55,27 +57,27 @@ This creates the following files/folders in your `app` directory:
 ├── src
 │   └── TestSuite
 │       └── Codeception
-│           ├── AcceptanceHelper.php
-│           ├── FunctionalHelper.php
-│           └── UnitHelper.php
+|           ├── AcceptanceTester.php
+|           ├── FunctionalTester.php
+|           ├── UnitTester.php
+|           ├── Helper
+│           │   ├── Acceptance.php
+│           │   ├── Functional.php
+│           │   └── Unit.php
+|           └── _generated
+|               └── .gitignore
 └── tests
     ├── Acceptance.suite.yml
     ├── Functional.suite.yml
     ├── Unit.suite.yml
     ├── Acceptance
-    │   ├── .gitignore
-    │   ├── bootstrap.php
-    │   └── AcceptanceTester.php
+    │   └── bootstrap.php
     ├── Fixture
     │   └── dump.sql
     ├── Functional
-    │   ├── .gitignore
-    │   ├── bootstrap.php
-    │   └── FunctionalTester.php
+    │   └── bootstrap.php
     └── Unit
-        ├── .gitignore
-        ├── bootstrap.php
-        └── UnitTester.php
+        └── bootstrap.php
 ```
 
 As you might have noticed, the CakePHP implementation differs in a couple things:
@@ -84,6 +86,8 @@ As you might have noticed, the CakePHP implementation differs in a couple things
 - uses `bootstrap.php`, no underscore prefix (vs. `_bootstrap.php`)
 - uses `src/TestSuite/Codeception` for custom modules (helpers) (vs. `tests/_helpers`)
 - uses `tmp/tests` to store logs (vs. `tests/_logs`)
+- uses `tests/Fixture` to fixture data (vs. `tests/_data`)
+- uses `tests/Envs` to fixture data (vs. `tests/_envs`)
 - adds a `.gitignore` to never track auto-generated files
 - adds custom templates for various generated files using the `codecept` binary
 
@@ -173,14 +177,41 @@ $I->dontSeeRecord('users', ['email' => 'jadb@cakephp.org']);
 
 ### Miscellaneous
 
-#### Load fixtures with `loadFixtures($fixtures[, $fixture2, ...])`
+#### Load fixtures (Only Cest)
 
-All the below forms are equivalent:
+In your `Cest` test case, write `$fixutures` property:
 
 ```php
-$I->loadFixtures('app.posts', 'app.tags');
-$I->loadFixtures(['app.posts', 'app.tags']);
-$I->fixtures = ['app.posts', 'app.tags'];
+class AwesomeCest
+{
+    public $fixtures = [
+        'app.Users',
+        'app.Posts',
+    ];
+
+    // ...
+}
+```
+
+You can use `$autoFixtures`, `$dropTables` property, and `loadFixtures()` method:
+
+```php
+class AwesomeCest
+{
+    public $autoFixtures = false;
+    public $dropTables = false;
+    public $fixtures = [
+        'app.Users',
+        'app.Posts',
+    ];
+
+    public function tryYourSenario($I)
+    {
+        // load fixtures manually
+        $I->loadFixtures('Users');
+        // ...
+    }
+}
 ```
 
 #### Assert CakePHP version with `expectedCakePHPVersion($ver, $operator = 'ge')`
