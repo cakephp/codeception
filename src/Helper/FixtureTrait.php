@@ -114,7 +114,7 @@ trait FixtureTrait
         if (empty($args)) {
             $autoFixtures = $this->testCase->autoFixtures;
             $this->testCase->autoFixtures = true;
-            $this->fixtureManager->load($this);
+            $this->fixtureManager->load($this->testCase);
             $this->testCase->autoFixtures = $autoFixtures;
         }
     }
