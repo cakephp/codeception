@@ -13,4 +13,5 @@ modules:
         # add a framework module here
         - \Cake\Codeception\Helper
         - Db
+        - Asserts
         - \App\TestSuite\Codeception\Helper\Functional

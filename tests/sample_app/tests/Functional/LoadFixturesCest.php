@@ -5,9 +5,9 @@ namespace App\Test\Functional;
 use App\TestSuite\Codeception\FunctionalTester;
 
 /**
- * Test for loadFixtures()
+ * Test for CakeFixture::loadFixtures()
  */
-class FixtureLoadCest
+class LoadFixturesCest
 {
 
     public $autoFixtures = false;
@@ -27,6 +27,10 @@ class FixtureLoadCest
 
         $I->loadFixtures();
         $I->seeInDatabase('posts', ['author_id' => 1, 'title' => 'First Post']);
-    }
 
+        // useFixtures use only once
+        $I->expectException('\Codeception\Exception\ModuleException', function () use ($I) {
+            $I->useFixtures('core.tags');
+        });
+    }
 }
