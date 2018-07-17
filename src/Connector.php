@@ -63,9 +63,11 @@ class Connector extends Client
 
         $_ENV = $environment = ['REQUEST_METHOD' => $request->getMethod()] + $request->getServer();
 
+        $content = (array_key_exists('CONTENT_TYPE', $environment) && $environment['CONTENT_TYPE'] == 'application/json') ? json_decode($request->getContent(), true) : (array)$request->getParameters();
+
         $props = [
             'url' => $url,
-            'post' => (array)$request->getParameters(),
+            'post' => $content,
             'files' => (array)$request->getFiles(),
             'cookies' => (array)$request->getCookies(),
             'session' => $this->getSession(),
