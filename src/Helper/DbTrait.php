@@ -42,7 +42,7 @@ trait DbTrait
     protected function deleteAllRecords($model, $data)
     {
         $table = TableRegistry::get($model);
-        $table->connection()
+        $table->getConnection()
             ->disableConstraints(function () use ($table, $data) {
                 $table->deleteAll($data);
             });
@@ -71,8 +71,8 @@ trait DbTrait
             $this->insertedRecords[$model] = [];
         }
 
-        $this->insertedRecords[$model][$table->primaryKey() . ' IN'][] = $data->{$table->primaryKey()};
-        return $data->{$table->primaryKey()};
+        $this->insertedRecords[$model][$table->getPrimaryKey() . ' IN'][] = $data->{$table->getPrimaryKey()};
+        return $data->{$table->getPrimaryKey()};
     }
 
     /**

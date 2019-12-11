@@ -3,9 +3,9 @@ namespace Cake\Codeception;
 
 use Cake\Core\Configure;
 use Cake\Event\Event;
-use Cake\Network\Request;
-use Cake\Network\Response;
-use Cake\Network\Session;
+use Cake\Http\Request;
+use Cake\Http\Response;
+use Cake\Http\Session;
 use Cake\Routing\DispatcherFactory;
 use Cake\Routing\Router;
 use Symfony\Component\BrowserKit\Client;
@@ -18,9 +18,9 @@ class Connector extends Client
     /**
      * Associative array of CakePHP classes:
      *
-     *  - request: \Cake\Network\Request
-     *  - response: \Cake\Network\Response
-     *  - session: \Cake\Network\Session
+     *  - request: \Cake\Http\Request
+     *  - response: \Cake\Http\Response
+     *  - session: \Cake\Http\Session
      *  - controller: \Cake\Controller\Controller
      *  - view: \Cake\View\View
      *  - auth: \Cake\Controller\Component\AuthComponent
@@ -33,7 +33,7 @@ class Connector extends Client
     /**
      * Get instance of the session.
      *
-     * @return \Cake\Network\Session
+     * @return \Cake\Http\Session
      */
     public function getSession()
     {
@@ -55,7 +55,7 @@ class Connector extends Client
      * Filters the BrowserKit request to the cake one.
      *
      * @param \Symfony\Component\BrowserKit\Request $request BrowserKit request.
-     * @return \Cake\Network\Request Cake request.
+     * @return \Cake\Http\Request Cake request.
      */
     protected function filterRequest(BrowserKitRequest $request)
     {
@@ -72,17 +72,7 @@ class Connector extends Client
             'environment' => $environment,
         ];
 
-        if (class_exists('\Cake\Http\ServerRequest') && $this->hasApplicationClass()) {
-            // CakePHP >= 3.4
-            $this->cake['request'] = new \Cake\Http\ServerRequest($props);
-        } else {
-            // CakePHP <= 3.3 or Non PSR-7 dispatcher
-            $this->cake['request'] = new Request($props);
-
-            // set params
-            Router::setRequestInfo($this->cake['request']);
-            $this->cake['request']->params = Router::parse($url);
-        }
+        $this->cake['request'] = new \Cake\Http\ServerRequest($props);
 
         return $this->cake['request'];
     }
@@ -90,7 +80,7 @@ class Connector extends Client
     /**
      * Filters the cake response to the BrowserKit one.
      *
-     * @param \Cake\Network\Response $response Cake response.
+     * @param \Cake\Http\Response $response Cake response.
      * @return \Symfony\Component\BrowserKit\Response BrowserKit response.
      */
     protected function filterResponse($response)
@@ -100,7 +90,7 @@ class Connector extends Client
             $response = \Cake\Http\ResponseTransformer::toCake($response);
         }
 
-        foreach ($response->cookie() as $cookie) {
+        foreach ($response->getCookies() as $cookie) {
             $this->getCookieJar()->set(new Cookie(
                 $cookie['name'],
                 $cookie['value'],
@@ -114,56 +104,29 @@ class Connector extends Client
 
         $response->sendHeaders();
         return new BrowserKitResponse(
-            $response->body(),
-            $response->statusCode(),
-            $response->header()
+            $response->getBody(),
+            $response->getStatusCode(),
+            $response->getHeaders()
         );
     }
 
     /**
      * Makes a request.
      *
-     * @param \Cake\Network\Request $request Cake request.
-     * @return \Cake\Network\Response Cake response.
+     * @param \Cake\Http\Request $request Cake request.
+     * @return \Cake\Http\Response Cake response.
      */
     protected function doRequest($request)
     {
         $response = new Response();
 
         try {
-            if (is_a($request, '\Cake\Http\ServerRequest')) {
-                // Run with PSR-7 dispatcher
-                $response = $this->runApplication($request);
-            } else {
-                // Run with legacy dispatcher
-                $response = $this->runDispatcher($request, $response);
-            }
+            $response = $this->runApplication($request);
         } catch (\PHPUnit_Exception $e) {
             throw $e;
         } catch (\Exception $e) {
             $response = $this->handleError($e);
         }
-
-        return $response;
-    }
-
-    /**
-     * Run application CakePHP < 3.4
-     *
-     * @param \Cake\Network\Request $request Cake request.
-     * @return \Cake\Network\Response Cake response.
-     */
-    protected function runDispatcher($request, $response)
-    {
-        $dispatcher = DispatcherFactory::create();
-        $dispatcher->eventManager()->on(
-            'Dispatcher.beforeDispatch',
-            ['priority' => 999],
-            [$this, 'controllerSpy']
-        );
-        ob_start();
-        $dispatcher->dispatch($request, $response);
-        ob_end_clean();
 
         return $response;
     }
@@ -178,7 +141,7 @@ class Connector extends Client
         $applicationClass = $this->getApplicationClassName();
         $server = new \Cake\Http\Server(new $applicationClass(CONFIG));
 
-        $server->eventManager()->on(
+        $server->getEventManager()->on(
             'Dispatcher.beforeDispatch',
             ['priority' => 999],
             [$this, 'controllerSpy']
@@ -214,12 +177,12 @@ class Connector extends Client
      */
     public function controllerSpy(Event $event)
     {
-        if (empty($event->data['controller'])) {
+        if (empty($event->getData('controller'))) {
             return;
         }
 
-        $this->cake['controller'] = $event->data['controller'];
-        $eventManager = $event->data['controller']->eventManager();
+        $this->cake['controller'] = $event->getData('controller');
+        $eventManager = $event->getData('controller')->getEventManager();
 
         $eventManager->on(
             'Controller.startup',
