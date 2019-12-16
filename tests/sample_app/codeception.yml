@@ -16,7 +16,7 @@ extensions:
 modules:
     config:
         Db:
-           dsn: 'mysql:host=0.0.0.0;dbname=cakephp_test'
+           dsn: 'mysql:host=127.0.0.1;dbname=cakephp_test'
            user: 'travis'
            password: 'travis'
            populate: true

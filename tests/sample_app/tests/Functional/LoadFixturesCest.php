@@ -12,8 +12,8 @@ class LoadFixturesCest
 
     public $autoFixtures = false;
     public $fixtures = [
-        'core.authors',
-        'core.posts',
+        'core.Authors',
+        'core.Posts',
     ];
 
     /**

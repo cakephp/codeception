@@ -2,6 +2,7 @@
 namespace Cake\Codeception\Helper;
 
 use Cake\ORM\TableRegistry;
+use \RuntimeException;
 
 trait DbTrait
 {
@@ -42,7 +43,7 @@ trait DbTrait
     protected function deleteAllRecords($model, $data)
     {
         $table = TableRegistry::get($model);
-        $table->connection()
+        $table->getConnection()
             ->disableConstraints(function () use ($table, $data) {
                 $table->deleteAll($data);
             });
@@ -71,8 +72,13 @@ trait DbTrait
             $this->insertedRecords[$model] = [];
         }
 
-        $this->insertedRecords[$model][$table->primaryKey() . ' IN'][] = $data->{$table->primaryKey()};
-        return $data->{$table->primaryKey()};
+        $primaryKey = $table->getPrimaryKey();
+        if (is_array($primaryKey)) {
+            throw new RuntimeException('Expected single primary key for table - ' . $model);
+        }
+
+        $this->insertedRecords[$model][$primaryKey . ' IN'][] = $data->{$primaryKey};
+        return $data->{$primaryKey};
     }
 
     /**
