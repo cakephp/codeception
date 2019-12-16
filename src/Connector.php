@@ -177,7 +177,7 @@ class Connector extends Client
      */
     public function controllerSpy(Event $event)
     {
-        if (empty($event->getData('controller'))) {
+        if (!$event->getData('controller')) {
             return;
         }
 

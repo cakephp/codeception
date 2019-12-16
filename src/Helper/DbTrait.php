@@ -2,6 +2,7 @@
 namespace Cake\Codeception\Helper;
 
 use Cake\ORM\TableRegistry;
+use \RuntimeException;
 
 trait DbTrait
 {
@@ -71,8 +72,13 @@ trait DbTrait
             $this->insertedRecords[$model] = [];
         }
 
-        $this->insertedRecords[$model][$table->getPrimaryKey() . ' IN'][] = $data->{$table->getPrimaryKey()};
-        return $data->{$table->getPrimaryKey()};
+        $primaryKey = $table->getPrimaryKey();
+        if (is_array($primaryKey)) {
+            throw new RuntimeException('Expected single primary key for table - ' . $model);
+        }
+
+        $this->insertedRecords[$model][$primaryKey . ' IN'][] = $data->{$primaryKey};
+        return $data->{$primaryKey};
     }
 
     /**
