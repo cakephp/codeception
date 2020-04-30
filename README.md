@@ -1,8 +1,8 @@
 CakePHP 3 Codeception Module
 ============================
 
-[![Build Status](https://api.travis-ci.org/cakephp/codeception.png)](https://travis-ci.org/cakephp/codeception)
-[![License](https://poser.pugx.org/cakephp/codeception/license.svg)](https://packagist.org/packages/cakephp/codeception)
+[![Build Status](https://img.shields.io/travis/com/cakephp/codeception?style=flat-square)](https://travis-ci.com/cakephp/codeception)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 
 A [codeception](http://codeception.com) module to test your CakePHP 3 powered application. Using Codeception with CakePHP opens up a whole new set of testing capabilities.
 
