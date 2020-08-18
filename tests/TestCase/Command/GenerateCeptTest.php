@@ -8,7 +8,7 @@ class GenerateCeptTest extends TestCase
     public function testExecute()
     {
         $file = TEST_APP_ROOT . 'tests' . DS . 'Functional' . DS . 'FooCept.php';
-        $this->assertTrue(file_exists($file), "Cest file [$file] should be generated");
+        $this->assertFileExists($file, "Cest file [$file] should be generated");
     }
 
     public function testGeneratorProduce()
