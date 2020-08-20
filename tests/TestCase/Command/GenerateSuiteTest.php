@@ -10,22 +10,22 @@ class GenerateSuiteTest extends TestCase
     {
         $testSuiteDir = TEST_APP_ROOT . 'src' . DS . 'TestSuite' . DS . 'Codeception' . DS;
 
-        $this->assertTrue(file_exists($testSuiteDir . 'Helper/Api.php'), 'Api helper must be auto-created');
-        $this->assertTrue(file_exists($testSuiteDir . 'ApiTester.php'), 'ApiTester must be auto-generated');
+        $this->assertFileExists($testSuiteDir . 'Helper/Api.php', 'Api helper must be auto-created');
+        $this->assertFileExists($testSuiteDir . 'ApiTester.php', 'ApiTester must be auto-generated');
     }
 
     public function testSuitesCreatedInTests()
     {
         $testsDir = TEST_APP_ROOT . 'tests' . DS . 'Api' . DS;
 
-        $this->assertTrue(is_dir($testsDir), 'Api test suite directory must be auto-created');
+        $this->assertDirectoryExists($testsDir, 'Api test suite directory must be auto-created');
         $this->assertFileExists($testsDir . 'bootstrap.php', 'Api bootstrap.php must be auto-created');
     }
 
     public function testApiConfigurationFileCreated()
     {
         $configFilePath = TEST_APP_ROOT . 'tests' . DS . 'Api.suite.yml';
-        $this->assertTrue(file_exists($configFilePath), 'File `Api.suite.yml` must be auto-created');
+        $this->assertFileExists($configFilePath, 'File `Api.suite.yml` must be auto-created');
 
         $result = file_get_contents($configFilePath);
         $this->assertContains('namespace: App\TestSuite\Codeception', $result, 'namespace must be enabled');
